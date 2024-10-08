@@ -1,0 +1,96 @@
+name: rugmi
+description: An interpretation of the Imgur application, developed for Hedgehog Labs as part of a take home assignment.
+version: 1.0.0+1
+publish_to: "none"
+
+environment:
+  sdk: ">=3.1.2 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  bloc: ^8.1.2
+  cached_network_image: ^3.3.0
+  cupertino_icons: ^1.0.2
+  flutter_native_splash: ^2.4.1
+  get_it: ^7.6.4
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.13
+  flutter_launcher_icons: ^0.14.1
+
+dev_dependencies:
+  auto_route_generator: ^7.3.2
+  bloc_test: ^9.1.4
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter_native_splash:
+  background_image: assets/splash/splash.png
+  color: "#0F0F4F"
+  android: true
+  ios: true
+  fullscreen: true
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/icon.png"
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/splash/
+    - ".env"
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/Inter-ThinItalic.ttf
+          weight: 100
+          style: italic
+        - asset: assets/fonts/Inter-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/Inter-ExtraLightItalic.ttf
+          weight: 200
+          style: italic
+        - asset: assets/fonts/Inter-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Inter-LightItalic.ttf
+          weight: 300
+          style: italic
+        - asset: assets/fonts/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Inter-Italic.ttf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter-SemiBoldItalic.ttf
+          weight: 600
+          style: italic
+        - asset: assets/fonts/Inter-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Inter-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/Inter-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/Inter-ExtraBoldItalic.ttf
+          weight: 800
+          style: italic
+        - asset: assets/fonts/Inter-Black.ttf
+          weight: 900
+        - asset: assets/fonts/Inter-BlackItalic.ttf
+          weight: 900
+          style: italic
