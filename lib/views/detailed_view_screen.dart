@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
@@ -9,7 +8,6 @@ import 'package:rugmi/bloc/favourites_bloc_event.dart';
 import 'package:rugmi/theme/app_colors.dart';
 import 'package:rugmi/widgets/detailed_image_card.dart';
 
-@RoutePage()
 class DetailedImageScreen extends StatefulWidget {
   final String imageUrl;
   final String title;

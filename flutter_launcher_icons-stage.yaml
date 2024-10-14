@@ -7,7 +7,7 @@ flutter_launcher_icons:
 
   ios: true
   remove_alpha_channel_ios: true
-  assets_path_ios: "ios/Runner/Assets.xcassets/AppIcon-stage.appiconset"
+  assets_path_ios: "ios/Runner/Assets.xcassets/AppIcon-stg.appiconset"
 
   web:
     generate: true

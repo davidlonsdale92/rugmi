@@ -14,5 +14,5 @@ void main() async {
 
   setupServiceLocator();
 
-  runApp(App());
+  runApp(const App());
 }

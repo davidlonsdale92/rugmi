@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
@@ -30,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
     searchBarController = TextEditingController();
     searchBarController.addListener(_onSearchChanged);
     _fetchGallery();
+    FlutterNativeSplash.remove();
   }
 
   @override

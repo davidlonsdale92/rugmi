@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
 import 'package:rugmi/bloc/favourites_bloc.dart';
 import 'package:rugmi/bloc/favourites_bloc_event.dart';
 import 'package:rugmi/bloc/favourites_bloc_state.dart';
@@ -25,7 +26,7 @@ class FavouritesScreen extends StatelessWidget {
             } else if (state is FavouritesEmpty) {
               return _buildEmptyFavouritesContent();
             } else if (state is FavouritesLoaded) {
-              return _buildFavouritesContent(state.favouritesBox);
+              return _buildFavouritesContent(state.favouritesBox, context);
             } else {
               return const SizedBox(); // Fallback for unknown state
             }

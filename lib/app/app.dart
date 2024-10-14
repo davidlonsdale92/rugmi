@@ -135,7 +135,7 @@ class _AppState extends State<App> {
             GoRoute(
               path: '/favourites',
               pageBuilder: (context, state) {
-                return NoTransitionPage(
+                return const NoTransitionPage(
                   child: FavouritesScreen(),
                 );
               },
