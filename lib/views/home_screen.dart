@@ -1,14 +1,12 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 import 'package:rugmi/api/imgur_api.dart';
-import 'package:rugmi/navigation/navigation.dart';
 import 'package:rugmi/theme/app_colors.dart';
 import 'package:rugmi/utils/common.dart';
 import 'package:rugmi/widgets/image_card.dart';
 
-@RoutePage()
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -42,55 +40,35 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _fetchGallery() async {
-    try {
-      final gallery = await _imgurAPI.fetchGallery(
-        section: 'hot',
-        sort: 'viral',
-        window: 'day',
-        page: 1,
-        showViral: true,
-        showMature: false,
-        albumPreviews: true,
-      );
+    final gallery = await _imgurAPI.fetchGallery(
+      section: 'hot',
+      sort: 'viral',
+      window: 'day',
+      page: 1,
+      showViral: true,
+      showMature: false,
+      albumPreviews: true,
+    );
 
-      if (gallery != null && gallery['data'] != null) {
-        setState(() {
-          _galleryItems = gallery['data'];
-        });
-      } else {
-        _handleError('Failed to fetch gallery');
-      }
-    } catch (e) {
-      _handleError('Network Error: $e');
+    if (gallery != null && gallery['data'] != null) {
+      setState(() {
+        _galleryItems = gallery['data'];
+      });
+    } else {
+      debugPrint('Failed to fetch gallery');
     }
   }
 
   void _searchImages(String query) async {
-    try {
-      final searchResults = await _imgurAPI.searchImages(query);
+    final searchResults = await _imgurAPI.searchImages(query);
 
-      if (searchResults != null && searchResults['data'] != null) {
-        setState(() {
-          _galleryItems = searchResults['data'];
-        });
-      } else {
-        _handleError('Failed to search images');
-      }
-    } catch (e) {
-      _handleError('Network Error: $e');
+    if (searchResults != null && searchResults['data'] != null) {
+      setState(() {
+        _galleryItems = searchResults['data'];
+      });
+    } else {
+      debugPrint('Failed to search images');
     }
-  }
-
-  void _handleError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
-    );
-    setState(() {
-      _galleryItems = [];
-    });
   }
 
   void saveSearchQuery(String query) async {
@@ -228,22 +206,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildImageGallery() {
     double cardWidth = MediaQuery.of(context).size.width / 2;
 
-    if (_galleryItems.isEmpty) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error, color: Colors.red, size: 48),
-            SizedBox(height: 16),
-            Text(
-              'No images available. Please try again later.',
-              style: TextStyle(color: Colors.white),
-            ),
-          ],
-        ),
-      );
-    }
-
     return GridView.builder(
       padding: const EdgeInsets.all(8.0),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -263,12 +225,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
         return InkWell(
           onTap: () {
-            context.router.push(
-              DetailedImageRoute(
-                imageUrl: imageUrl!,
-                title: title,
-                points: points,
-              ),
+            context.push(
+              '/details',
+              extra: {
+                'imageUrl': imageUrl!,
+                'title': title,
+                'points': points,
+              },
             );
           },
           child: item['cover'] != null

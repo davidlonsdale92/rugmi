@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-
-import '../theme/app_colors.dart';
-import '../utils/common.dart';
+import 'package:rugmi/theme/app_colors.dart';
+import 'package:rugmi/utils/common.dart';
 
 class SettingsScreen extends StatelessWidget {
   final VoidCallback onFavouritesCleared;

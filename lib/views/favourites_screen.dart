@@ -1,47 +1,41 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:rugmi/navigation/navigation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:rugmi/bloc/favourites_bloc.dart';
+import 'package:rugmi/bloc/favourites_bloc_event.dart';
+import 'package:rugmi/bloc/favourites_bloc_state.dart';
 import 'package:rugmi/theme/app_colors.dart';
 import 'package:rugmi/widgets/image_card.dart';
 
-@RoutePage()
-class FavouritesScreen extends StatefulWidget {
+class FavouritesScreen extends StatelessWidget {
   const FavouritesScreen({super.key});
 
   @override
-  _FavouritesScreenState createState() => _FavouritesScreenState();
-}
-
-class _FavouritesScreenState extends State<FavouritesScreen> {
-  late Future<Box> favouritesBox;
-
-  @override
-  void initState() {
-    super.initState();
-    favouritesBox = Hive.openBox('favouritesBox');
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Box>(
-      future: favouritesBox,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return _buildNetworkErrorContent();
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return _buildNoFavouritesContent();
-        } else {
-          var box = snapshot.data!;
-          return _buildFavouritesContent(box);
-        }
-      },
+    return BlocProvider(
+      create: (context) => FavouritesBloc()..add(LoadFavourites()),
+      child: Scaffold(
+        backgroundColor: AppColors.backgroundColor,
+        body: BlocBuilder<FavouritesBloc, FavouritesState>(
+          builder: (context, state) {
+            if (state is FavouritesLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is FavouritesError) {
+              return _buildNetworkErrorContent(state.message);
+            } else if (state is FavouritesEmpty) {
+              return _buildEmptyFavouritesContent();
+            } else if (state is FavouritesLoaded) {
+              return _buildFavouritesContent(state.favouritesBox);
+            } else {
+              return const SizedBox(); // Fallback for unknown state
+            }
+          },
+        ),
+      ),
     );
   }
 
-  Widget _buildNetworkErrorContent() {
+  Widget _buildNetworkErrorContent(String message) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -54,12 +48,12 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
             height: 300,
           ),
           const SizedBox(height: 20),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 50.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 50.0),
             child: Text(
-              'Error loading favourites',
+              message,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: AppColors.headerTextColor,
@@ -71,7 +65,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
     );
   }
 
-  Widget _buildNoFavouritesContent() {
+  Widget _buildEmptyFavouritesContent() {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -101,7 +95,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
     );
   }
 
-  Widget _buildFavouritesContent(Box box) {
+  Widget _buildFavouritesContent(Box box, BuildContext context) {
     double cardWidth = MediaQuery.of(context).size.width / 2;
 
     return GridView.builder(
@@ -121,12 +115,13 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
 
         return InkWell(
           onTap: () {
-            context.router.push(
-              DetailedImageRoute(
-                imageUrl: imageUrl!,
-                title: title,
-                points: points,
-              ),
+            context.push(
+              '/details',
+              extra: {
+                'imageUrl': imageUrl!,
+                'title': title,
+                'points': points,
+              },
             );
           },
           child: item['imageUrl'] != null
