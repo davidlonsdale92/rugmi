@@ -1,59 +1,73 @@
 import 'package:flutter/material.dart';
 
+import '../theme/app_colors.dart';
+
 class ImageCard extends StatelessWidget {
   final String imageUrl;
   final String title;
-  final String description;
+  final int points;
+  final double width;
+  final double? height;
 
   const ImageCard({
-    super.key,
     required this.imageUrl,
     required this.title,
-    required this.description,
+    required this.points,
+    required this.width,
+    super.key,
+    this.height,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 5,
+      color: AppColors.secondaryCardColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-            child: Image.network(
-              imageUrl,
-              fit: BoxFit.cover,
-              height: 200,
+      child: SizedBox(
+        width: width,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            ClipRRect(
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(10)),
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                height: height,
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: width * 0.07,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.headerTextColor,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  description,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
+                  const SizedBox(height: 5),
+                  Text(
+                    '${points.toString()} points',
+                    style: TextStyle(
+                      fontSize: width * 0.06,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.subtitleTextColor,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

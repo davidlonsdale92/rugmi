@@ -6,11 +6,12 @@ class AppColors {
   static const primaryMuted = Color(0xFFAFEED0);
   static const secondary = Color(0xFF202A58);
   static const backgroundColor = Color(0xFF0F0F4F);
-  static const errorColor = Color(0xFFCF1235);
+  static const error = Color(0xFFCF1235);
 
 // Component Colours
   static const cardColor = Color(0xFF202A58);
   static const secondaryCardColor = Color(0xFF474A51);
+  static const modalColor = Color(0xFF1D1858);
   static const searchBarColor = Color(0xFF46446A);
   static const unselectedColor = Color(0xFFB4B9C2);
 
