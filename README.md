@@ -6,4 +6,4 @@
 
 ---
 
-An interpretation of the Imgur application, developed for Hedgehog Labs as part of a take home assignment.
+An interpretation of the Imgur application.
