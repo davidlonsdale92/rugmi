@@ -25,7 +25,15 @@ class DetailedImageScreen extends StatefulWidget {
 }
 
 class _DetailedImageScreenState extends State<DetailedImageScreen> {
-  var favouritesBox = Hive.box('favouritesBox');
+  late Box favouritesBox;
+  bool _isFavourite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    favouritesBox = Hive.box('favouritesBox');
+    _isFavourite = isFavourite(widget.imageUrl);
+  }
 
   bool isFavourite(String imageId) {
     return favouritesBox.containsKey(imageId);
@@ -36,6 +44,9 @@ class _DetailedImageScreenState extends State<DetailedImageScreen> {
     try {
       await favouritesBox.put(imageId, imageDetails);
       log('Image $imageId added to favourites.');
+      setState(() {
+        _isFavourite = true;
+      });
     } catch (e) {
       log('Error adding image to favourites: $e');
     }
@@ -45,6 +56,9 @@ class _DetailedImageScreenState extends State<DetailedImageScreen> {
     try {
       await favouritesBox.delete(imageId);
       log('Image $imageId removed from favourites.');
+      setState(() {
+        _isFavourite = false;
+      });
     } catch (e) {
       log('Error removing image from favourites: $e');
     }
@@ -117,9 +131,8 @@ class _DetailedImageScreenState extends State<DetailedImageScreen> {
           const SizedBox(height: 16),
           ElevatedButton(
             style: ButtonStyle(
-              backgroundColor: isFavourite(widget.imageUrl)
-                  ? const WidgetStatePropertyAll(AppColors.error)
-                  : const WidgetStatePropertyAll(AppColors.primary),
+              backgroundColor: WidgetStatePropertyAll(
+                  _isFavourite ? AppColors.error : AppColors.primary),
               padding: const WidgetStatePropertyAll(
                 EdgeInsets.symmetric(vertical: 12, horizontal: 65),
               ),
@@ -130,28 +143,22 @@ class _DetailedImageScreenState extends State<DetailedImageScreen> {
               ),
             ),
             onPressed: () {
-              setState(() {
-                if (isFavourite(widget.imageUrl)) {
-                  removeFromFavourites(widget.imageUrl).then((_) {
-                    // Dispatch the event to refresh favourites when removing
-                    context.read<FavouritesBloc>().add(LoadFavourites());
-                  });
-                } else {
-                  addToFavourites(widget.imageUrl, {
-                    'title': widget.title,
-                    'points': widget.points,
-                    'imageUrl': widget.imageUrl,
-                  }).then((_) {
-                    // Dispatch the event to refresh favourites when adding
-                    context.read<FavouritesBloc>().add(LoadFavourites());
-                  });
-                }
-              });
+              if (_isFavourite) {
+                removeFromFavourites(widget.imageUrl).then((_) {
+                  context.read<FavouritesBloc>().add(LoadFavourites());
+                });
+              } else {
+                addToFavourites(widget.imageUrl, {
+                  'title': widget.title,
+                  'points': widget.points,
+                  'imageUrl': widget.imageUrl,
+                }).then((_) {
+                  context.read<FavouritesBloc>().add(LoadFavourites());
+                });
+              }
             },
             child: Text(
-              isFavourite(widget.imageUrl)
-                  ? 'Remove from Favourites'
-                  : 'Add to Favourites',
+              _isFavourite ? 'Remove from Favourites' : 'Add to Favourites',
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w400,

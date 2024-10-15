@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
+import 'package:rugmi/bloc/favourites_bloc.dart';
 import 'package:rugmi/theme/app_colors.dart';
 import 'package:rugmi/theme/theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -166,11 +168,18 @@ class _AppState extends State<App> {
       ],
     );
 
-    return MaterialApp.router(
-      theme: appTheme(),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      routerConfig: _router,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => FavouritesBloc(),
+        ),
+      ],
+      child: MaterialApp.router(
+        theme: appTheme(),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        routerConfig: _router,
+      ),
     );
   }
 }

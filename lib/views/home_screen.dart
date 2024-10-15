@@ -165,36 +165,35 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             trailing: [
-              // Conditionally show the close or search icon
-              IconButton(
-                icon: Icon(
-                  isSearchActive ? Icons.close : Icons.search,
+              if (isSearchActive)
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  iconSize: 30,
+                  color: Colors.white,
+                  onPressed: () {
+                    searchBarController.clear();
+                    _hideDropdown();
+                    _fetchGallery();
+                    setState(() {
+                      isSearchActive = false;
+                    });
+                  },
                 ),
+              IconButton(
+                icon: const Icon(Icons.search),
                 iconSize: 30,
                 color: Colors.white,
                 onPressed: () {
-                  if (isSearchActive) {
-                    // Clear the search field and reset the dropdown
-                    searchBarController.clear();
+                  final query = searchBarController.text;
+                  if (query.isNotEmpty) {
+                    saveSearchQuery(query);
+                    _searchImages(query);
                     _hideDropdown();
-                    _fetchGallery(); // Reset the gallery view
-                  } else {
-                    final query = searchBarController.text;
-                    if (query.isNotEmpty) {
-                      saveSearchQuery(query);
-                      _searchImages(query);
-                      _hideDropdown();
-                    }
                   }
-
-                  setState(() {
-                    isSearchActive = false; // Reset the state after clearing
-                  });
                 },
               ),
             ],
             onTap: () {
-              // Show recent searches dropdown if there are any, when the search bar is tapped
               if (searchBarController.text.isEmpty) {
                 _showDropdown();
               }
