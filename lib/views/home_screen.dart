@@ -245,8 +245,6 @@ class _HomeScreenState extends State<HomeScreen> {
         final title = item['title'] ?? 'Untitled';
         final points = item['points'] ?? '';
 
-        log('$item');
-
         return InkWell(
           onTap: () {
             context.push(

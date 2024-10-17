@@ -37,8 +37,15 @@ First of all you'll need to create and populate a .env file at the root of the p
 
 Once you have this then just go ahead and choose which environment you want to run against and you're in! You can also launch from the terminal using:
 
-```#bash
-flutter run
+```sh
+# Development
+$ flutter run --flavor development --target lib/main_development.dart
+
+# Staging
+$ flutter run --flavor staging --target lib/main_staging.dart
+
+# Production
+$ flutter run --flavor production --target lib/main_production.dart
 ```
 
 ---
