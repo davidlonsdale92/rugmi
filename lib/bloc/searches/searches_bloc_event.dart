@@ -18,18 +18,16 @@ class LoadRecentSearches extends SearchesEvent {}
 class ClearSearchHistory extends SearchesEvent {}
 
 class SearchImages extends SearchesEvent {
-  final String query;
-
   const SearchImages(this.query);
+  final String query;
 
   @override
   List<Object?> get props => [query];
 }
 
 class ToggleSearchActive extends SearchesEvent {
-  final bool isActive;
-
   const ToggleSearchActive(this.isActive);
+  final bool isActive;
 
   @override
   List<Object?> get props => [isActive];

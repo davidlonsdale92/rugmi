@@ -13,14 +13,14 @@ void main() {
 
     blocTest<ModalBloc, ModalState>(
       'emits [ModalVisible] when ShowModal is added',
-      build: () => ModalBloc(),
+      build: ModalBloc.new,
       act: (bloc) => bloc.add(ShowModal()),
       expect: () => [ModalVisible()],
     );
 
     blocTest<ModalBloc, ModalState>(
       'emits [ModalHidden] when HideModal is added',
-      build: () => ModalBloc(),
+      build: ModalBloc.new,
       act: (bloc) => bloc.add(HideModal()),
       expect: () => [ModalHidden()],
     );

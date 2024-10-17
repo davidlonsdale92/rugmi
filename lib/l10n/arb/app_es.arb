@@ -31,5 +31,13 @@
   "removeFromFavourites": "Eliminar de Favoritos",
   "@removeFromFavourites": {
     "description": "Texto para el botón de Eliminar de Favoritos"
+  },
+  "uhOh": "¡Oh no! Ocurrió un error al crear la galería",
+  "@uhOh": {
+    "description": "Mensaje para la pantalla de inicio cuando no se pueden obtener imágenes de la API"
+  },
+  "struggling": "Parece que estamos teniendo problemas para encontrar la galería en este momento",
+  "@struggling": {
+    "description": "Mensaje para la pantalla de inicio cuando la lista de imágenes está vacía para la galería"
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'app_colors.dart';
-import 'app_dimensions.dart';
-import 'typography.dart';
+import 'package:rugmi/theme/app_colors.dart';
+import 'package:rugmi/theme/app_dimensions.dart';
+import 'package:rugmi/theme/typography.dart';
 
 ThemeData appTheme() {
   return ThemeData(

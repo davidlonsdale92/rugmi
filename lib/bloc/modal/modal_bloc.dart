@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'modal_bloc_event.dart';
-import 'modal_bloc_state.dart';
+import 'package:rugmi/bloc/modal/modal_bloc_event.dart';
+import 'package:rugmi/bloc/modal/modal_bloc_state.dart';
 
 class ModalBloc extends Bloc<ModalEvent, ModalState> {
   ModalBloc() : super(ModalHidden()) {

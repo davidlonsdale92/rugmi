@@ -14,9 +14,8 @@ class ModalLoading extends ModalState {}
 class ModalVisible extends ModalState {}
 
 class ModalError extends ModalState {
-  final String message;
-
   const ModalError(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];

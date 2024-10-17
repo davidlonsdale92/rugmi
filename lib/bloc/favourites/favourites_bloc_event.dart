@@ -12,19 +12,17 @@ class LoadFavourites extends FavouritesEvent {}
 class ClearFavourites extends FavouritesEvent {}
 
 class AddFavourite extends FavouritesEvent {
+  const AddFavourite(this.imageId, this.imageDetails);
   final String imageId;
   final Map<String, dynamic> imageDetails;
-
-  const AddFavourite(this.imageId, this.imageDetails);
 
   @override
   List<Object?> get props => [imageId, imageDetails];
 }
 
 class RemoveFavourite extends FavouritesEvent {
-  final String imageId;
-
   const RemoveFavourite(this.imageId);
+  final String imageId;
 
   @override
   List<Object?> get props => [imageId];

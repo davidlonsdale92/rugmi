@@ -16,7 +16,7 @@ void main() {
   group('HiveRepo Tests', () {
     test('addItem adds an item to the box without a key', () async {
       // Open the box
-      var box = await Hive.openBox(HiveRepo.searchesBox);
+      final box = await Hive.openBox(HiveRepo.searchesBox);
 
       // Call the method under test
       await HiveRepo.addItem(HiveRepo.searchesBox, 'item');
@@ -26,7 +26,7 @@ void main() {
     });
 
     test('addItem adds an item to the box with a key', () async {
-      var box = await Hive.openBox(HiveRepo.searchesBox);
+      final box = await Hive.openBox(HiveRepo.searchesBox);
 
       await HiveRepo.addItem(HiveRepo.searchesBox, 'item', key: 'key');
 
@@ -34,7 +34,7 @@ void main() {
     });
 
     test('getItems returns all items when no key is provided', () async {
-      var box = await Hive.openBox(HiveRepo.searchesBox);
+      final box = await Hive.openBox(HiveRepo.searchesBox);
       await box.addAll(['item1', 'item2']);
 
       final items = HiveRepo.getItems(HiveRepo.searchesBox);
@@ -43,7 +43,7 @@ void main() {
     });
 
     test('getItems returns items by key', () async {
-      var box = await Hive.openBox(HiveRepo.searchesBox);
+      final box = await Hive.openBox(HiveRepo.searchesBox);
       await box.put('key', ['item1', 'item2']);
 
       final items = HiveRepo.getItems(HiveRepo.searchesBox, key: 'key');
@@ -52,7 +52,7 @@ void main() {
     });
 
     test('clearBox clears the box', () async {
-      var box = await Hive.openBox(HiveRepo.searchesBox);
+      final box = await Hive.openBox(HiveRepo.searchesBox);
       await box.add('item');
 
       await HiveRepo.clearBox(HiveRepo.searchesBox);
@@ -61,7 +61,7 @@ void main() {
     });
 
     test('removeItem removes item by index', () async {
-      var box = await Hive.openBox(HiveRepo.searchesBox);
+      final box = await Hive.openBox(HiveRepo.searchesBox);
       await box.addAll(['item1', 'item2']);
 
       await HiveRepo.removeItem(HiveRepo.searchesBox, 0);
@@ -70,7 +70,7 @@ void main() {
     });
 
     test('addSearchQuery adds a query to recent searches', () async {
-      var box = await Hive.openBox(HiveRepo.searchesBox);
+      final box = await Hive.openBox(HiveRepo.searchesBox);
       await box.put(HiveRepo.recentSearchesKey, ['search1']);
 
       await HiveRepo.addSearchQuery('search2');
@@ -81,7 +81,7 @@ void main() {
     });
 
     test('getRecentSearches returns a list of recent searches', () async {
-      var box = await Hive.openBox(HiveRepo.searchesBox);
+      final box = await Hive.openBox(HiveRepo.searchesBox);
       await box.put(HiveRepo.recentSearchesKey, ['search1', 'search2']);
 
       final searches = HiveRepo.getRecentSearches();
@@ -90,7 +90,7 @@ void main() {
     });
 
     test('clearRecentSearches clears recent searches', () async {
-      var box = await Hive.openBox(HiveRepo.searchesBox);
+      final box = await Hive.openBox(HiveRepo.searchesBox);
       await box.put(HiveRepo.recentSearchesKey, ['search1', 'search2']);
 
       await HiveRepo.clearRecentSearches();

@@ -1,9 +1,8 @@
 import 'package:equatable/equatable.dart';
 
 abstract class NavigationState extends Equatable {
-  final int selectedIndex;
-
   const NavigationState(this.selectedIndex);
+  final int selectedIndex;
 
   @override
   List<Object?> get props => [selectedIndex];

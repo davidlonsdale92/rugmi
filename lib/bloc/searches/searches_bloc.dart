@@ -1,14 +1,12 @@
-import 'searches_bloc_event.dart';
-import 'searches_bloc_state.dart';
-import 'package:get_it/get_it.dart';
 import 'package:flutter/material.dart';
-import 'package:rugmi/api/imgur_api.dart';
-import 'package:rugmi/services/hive_init.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:rugmi/api/imgur_api.dart';
+import 'package:rugmi/bloc/searches/searches_bloc_event.dart';
+import 'package:rugmi/bloc/searches/searches_bloc_state.dart';
+import 'package:rugmi/services/hive_init.dart';
 
 class SearchesBloc extends Bloc<SearchesEvent, SearchesState> {
-  final ImgurAPI _imgurAPI = GetIt.I<ImgurAPI>();
-
   SearchesBloc() : super(SearchesInitial()) {
     on<FetchGallery>(_onFetchGallery);
     on<ShowDropdown>(_onShowDropdown);
@@ -18,10 +16,13 @@ class SearchesBloc extends Bloc<SearchesEvent, SearchesState> {
     on<ClearSearchHistory>(_onClearSearchHistory);
     on<ToggleSearchActive>(_onToggleSearchActive);
   }
+  final ImgurAPI _imgurAPI = GetIt.I<ImgurAPI>();
 
   // Event handler for FetchGallery
   Future<void> _onFetchGallery(
-      FetchGallery event, Emitter<SearchesState> emit) async {
+    FetchGallery event,
+    Emitter<SearchesState> emit,
+  ) async {
     emit(GalleryLoading());
 
     try {
@@ -36,10 +37,14 @@ class SearchesBloc extends Bloc<SearchesEvent, SearchesState> {
       );
 
       if (gallery != null && gallery['data'] != null) {
-        emit(GalleryLoaded(gallery['data']));
+        emit(
+          GalleryLoaded(
+            List<dynamic>.from(gallery['data'] as Iterable<dynamic>),
+          ),
+        );
       } else {
         debugPrint('Failed to fetch gallery');
-        emit(GalleryError('Failed to fetch gallery data.'));
+        emit(const GalleryError('Failed to fetch gallery data.'));
       }
     } catch (e) {
       debugPrint('An error occurred while fetching the gallery: $e');
@@ -49,27 +54,35 @@ class SearchesBloc extends Bloc<SearchesEvent, SearchesState> {
 
   // Event handler for SearchImages
   Future<void> _onSearchImages(
-      SearchImages event, Emitter<SearchesState> emit) async {
+    SearchImages event,
+    Emitter<SearchesState> emit,
+  ) async {
     emit(SearchesLoading());
     try {
       final searchResults = await _imgurAPI.searchImages(event.query);
 
       if (searchResults != null && searchResults['data'] != null) {
-        HiveRepo.addSearchQuery(event.query);
-        emit(SearchesLoaded(searchResults['data']));
+        await HiveRepo.addSearchQuery(event.query);
+        emit(
+          SearchesLoaded(
+            List<dynamic>.from(searchResults['data'] as Iterable<dynamic>),
+          ),
+        );
       } else {
         debugPrint('Failed to search images');
         emit(const SearchError('Failed to search images'));
       }
     } catch (error) {
-      debugPrint('Error While Searching: ${error.toString()})');
+      debugPrint('Error While Searching: $error)');
       emit(SearchError(error.toString()));
     }
   }
 
   // Event handler for ToggleSearchActive
   void _onToggleSearchActive(
-      ToggleSearchActive event, Emitter<SearchesState> emit) {
+    ToggleSearchActive event,
+    Emitter<SearchesState> emit,
+  ) {
     emit(SearchActiveState(event.isActive));
     if (event.isActive) {
       emit(DropdownVisible());
@@ -80,14 +93,18 @@ class SearchesBloc extends Bloc<SearchesEvent, SearchesState> {
 
   // Event handler for LoadRecentSearches
   void _onLoadRecentSearches(
-      LoadRecentSearches event, Emitter<SearchesState> emit) {
+    LoadRecentSearches event,
+    Emitter<SearchesState> emit,
+  ) {
     final recentSearches = HiveRepo.getRecentSearches();
     emit(RecentSearchesLoaded(recentSearches));
   }
 
   // Event handler for ClearSearchHistory
   Future<void> _onClearSearchHistory(
-      ClearSearchHistory event, Emitter<SearchesState> emit) async {
+    ClearSearchHistory event,
+    Emitter<SearchesState> emit,
+  ) async {
     await HiveRepo.clearRecentSearches();
     emit(SearchHistoryCleared());
   }

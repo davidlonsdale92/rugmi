@@ -1,6 +1,7 @@
-import 'navigation_bloc_event.dart';
-import 'navigation_bloc_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:rugmi/bloc/navigation/navigation_bloc_event.dart';
+import 'package:rugmi/bloc/navigation/navigation_bloc_state.dart';
 
 class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   NavigationBloc() : super(const HomePageState()) {
@@ -15,17 +16,23 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   }
 
   void _onNavigateToFavourites(
-      NavigateToFavourites event, Emitter<NavigationState> emit) {
+    NavigateToFavourites event,
+    Emitter<NavigationState> emit,
+  ) {
     emit(const FavouritesPageState());
   }
 
   void _onNavigateToSettings(
-      NavigateToSettings event, Emitter<NavigationState> emit) {
+    NavigateToSettings event,
+    Emitter<NavigationState> emit,
+  ) {
     emit(const SettingsPageState());
   }
 
   void _onNavigateToDetails(
-      NavigateToDetails event, Emitter<NavigationState> emit) {
+    NavigateToDetails event,
+    Emitter<NavigationState> emit,
+  ) {
     emit(const DetailsPageState());
   }
 }

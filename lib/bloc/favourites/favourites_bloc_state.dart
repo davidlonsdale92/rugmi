@@ -12,18 +12,16 @@ class FavouritesEmpty extends FavouritesState {}
 class FavouritesLoading extends FavouritesState {}
 
 class FavouritesError extends FavouritesState {
-  final String message;
-
   const FavouritesError(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class FavouritesLoaded extends FavouritesState {
-  final List<dynamic> favourites;
-
   const FavouritesLoaded(this.favourites);
+  final List<dynamic> favourites;
 
   @override
   List<Object?> get props => [favourites];

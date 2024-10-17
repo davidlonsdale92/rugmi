@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:rugmi/theme/app_colors.dart';
-import 'package:rugmi/widgets/image_card.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rugmi/bloc/searches/searches_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:go_router/go_router.dart';
+import 'package:rugmi/bloc/searches/searches_bloc.dart';
 import 'package:rugmi/bloc/searches/searches_bloc_event.dart';
 import 'package:rugmi/bloc/searches/searches_bloc_state.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:rugmi/theme/app_colors.dart';
+import 'package:rugmi/widgets/image_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
           } else if (state is GalleryLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is GalleryError) {
-            return _buildGalleryErrorContent('Error: ${state.message}');
+            return _buildGalleryErrorContent();
           } else if (state is RecentSearchesLoaded ||
               state is DropdownVisible) {
             return Stack(
@@ -81,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
           } else if (state is SearchesLoaded) {
             return _buildImageGallery(state.searchResults);
           } else if (state is SearchError) {
-            return _buildGalleryErrorContent(state.message);
+            return _buildGalleryErrorContent();
           } else {
             return const Center(child: CircularProgressIndicator());
           }
@@ -97,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
       preferredSize: const Size.fromHeight(65),
       child: BlocBuilder<SearchesBloc, SearchesState>(
         builder: (context, state) {
-          bool isSearchActive = state is SearchActiveState;
+          final isSearchActive = state is SearchActiveState;
 
           return AppBar(
             backgroundColor: AppColors.backgroundColor,
@@ -106,7 +106,8 @@ class _HomeScreenState extends State<HomeScreen> {
               child: SearchBar(
                 controller: searchBarController,
                 padding: WidgetStateProperty.all(
-                    const EdgeInsets.symmetric(vertical: 0, horizontal: 8)),
+                  const EdgeInsets.symmetric(horizontal: 8),
+                ),
                 backgroundColor:
                     WidgetStateProperty.all(AppColors.searchBarColor),
                 textStyle: WidgetStateProperty.all(
@@ -115,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     fontSize: 16,
                   ),
                 ),
-                hintText: AppLocalizations.of(context)!.hintText,
+                hintText: AppLocalizations.of(context).hintText,
                 hintStyle: WidgetStateProperty.all(
                   const TextStyle(
                     color: AppColors.subtitleTextColor,
@@ -169,13 +170,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildSearchHistoryDropdown(List<String> recentSearches) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
         decoration: const BoxDecoration(
           color: AppColors.modalColor,
           borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(12.0),
-            bottomRight: Radius.circular(12.0),
+            bottomLeft: Radius.circular(12),
+            bottomRight: Radius.circular(12),
           ),
         ),
         child: Column(
@@ -210,7 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   context.read<SearchesBloc>().add(FetchGallery());
                 },
                 child: Text(
-                  AppLocalizations.of(context)!.clearHistory,
+                  AppLocalizations.of(context).clearHistory,
                   style: const TextStyle(
                     color: AppColors.primary,
                     fontSize: 16,
@@ -223,19 +224,19 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildImageGallery(List<dynamic> _galleryItems) {
-    double cardWidth = MediaQuery.of(context).size.width / 2;
+  Widget _buildImageGallery(List<dynamic> galleryItems) {
+    final cardWidth = MediaQuery.of(context).size.width / 2;
     return GridView.builder(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        crossAxisSpacing: 8.0,
-        mainAxisSpacing: 8.0,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
         childAspectRatio: 0.7,
       ),
-      itemCount: _galleryItems.length,
+      itemCount: galleryItems.length,
       itemBuilder: (context, index) {
-        final item = _galleryItems[index];
+        final item = galleryItems[index];
         final imageUrl = item['cover'] != null
             ? 'https://i.imgur.com/${item['cover']}.jpg'
             : null;
@@ -247,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
             context.push(
               '/details',
               extra: {
-                'imageUrl': imageUrl!,
+                'imageUrl': imageUrl,
                 'title': title,
                 'points': points,
               },
@@ -256,8 +257,10 @@ class _HomeScreenState extends State<HomeScreen> {
           child: item['cover'] != null
               ? ImageCard(
                   imageUrl: imageUrl!,
-                  title: title,
-                  points: points,
+                  title: title is String ? title : 'Untitled',
+                  points: points is int
+                      ? points
+                      : int.tryParse(points.toString()) ?? 0,
                   width: cardWidth,
                   height: 200,
                 )
@@ -275,37 +278,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(height: 20),
-          Image.asset(
-            'assets/images/error.png',
-            width: 300,
-            height: 300,
-          ),
-          const SizedBox(height: 20),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 50.0),
-            child: Text(
-              "Seems like we're struggling to find the gallery right now",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: AppColors.headerTextColor,
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildGalleryErrorContent(String error) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(height: 20),
           Image.asset(
@@ -315,9 +287,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 50.0),
+            padding: const EdgeInsets.symmetric(horizontal: 50),
             child: Text(
-              'Uh Oh! An error occurred while creating the gallery: $error',
+              AppLocalizations.of(context).struggling,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 20,
@@ -325,7 +297,36 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: AppColors.headerTextColor,
               ),
             ),
-          )
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGalleryErrorContent() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(height: 20),
+          Image.asset(
+            'assets/images/error.png',
+            width: 300,
+            height: 300,
+          ),
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 50),
+            child: Text(
+              AppLocalizations.of(context).uhOh,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.headerTextColor,
+              ),
+            ),
+          ),
         ],
       ),
     );

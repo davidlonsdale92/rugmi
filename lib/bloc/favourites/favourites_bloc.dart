@@ -1,7 +1,7 @@
-import 'favourites_bloc_event.dart';
-import 'favourites_bloc_state.dart';
-import 'package:rugmi/services/hive_init.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rugmi/bloc/favourites/favourites_bloc_event.dart';
+import 'package:rugmi/bloc/favourites/favourites_bloc_state.dart';
+import 'package:rugmi/services/hive_init.dart';
 
 class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
   FavouritesBloc() : super(FavouritesLoading()) {
@@ -12,9 +12,11 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
   }
 
   Future<void> _onLoadFavourites(
-      LoadFavourites event, Emitter<FavouritesState> emit) async {
+    LoadFavourites event,
+    Emitter<FavouritesState> emit,
+  ) async {
     try {
-      var items = HiveRepo.getItems(HiveRepo.favouritesBox);
+      final items = HiveRepo.getItems(HiveRepo.favouritesBox) as List<dynamic>;
       if (items.isEmpty) {
         emit(FavouritesEmpty());
       } else {
@@ -26,7 +28,9 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
   }
 
   Future<void> _onClearFavourites(
-      ClearFavourites event, Emitter<FavouritesState> emit) async {
+    ClearFavourites event,
+    Emitter<FavouritesState> emit,
+  ) async {
     try {
       await HiveRepo.clearBox(HiveRepo.favouritesBox);
       emit(FavouritesEmpty());
@@ -36,10 +40,12 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
   }
 
   Future<void> _onAddFavourite(
-      AddFavourite event, Emitter<FavouritesState> emit) async {
+    AddFavourite event,
+    Emitter<FavouritesState> emit,
+  ) async {
     try {
       await HiveRepo.addItem(HiveRepo.favouritesBox, event.imageDetails);
-      var items = HiveRepo.getItems(HiveRepo.favouritesBox);
+      final items = HiveRepo.getItems(HiveRepo.favouritesBox) as List<dynamic>;
       emit(FavouritesLoaded(items));
     } catch (error) {
       emit(const FavouritesError('Failed to add favourite'));
@@ -47,16 +53,18 @@ class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
   }
 
   Future<void> _onRemoveFavourite(
-      RemoveFavourite event, Emitter<FavouritesState> emit) async {
+    RemoveFavourite event,
+    Emitter<FavouritesState> emit,
+  ) async {
     try {
       var items = HiveRepo.getItems(HiveRepo.favouritesBox);
-      var index =
+      final index =
           items.indexWhere((element) => element['imageUrl'] == event.imageId);
       if (index != -1) {
-        await HiveRepo.removeItem(HiveRepo.favouritesBox, index);
+        await HiveRepo.removeItem(HiveRepo.favouritesBox, index as int);
       }
-      items = HiveRepo.getItems(HiveRepo.favouritesBox);
-      emit(FavouritesLoaded(items));
+      items = HiveRepo.getItems(HiveRepo.favouritesBox) as List<dynamic>;
+      emit(FavouritesLoaded(items as List<dynamic>));
     } catch (error) {
       emit(const FavouritesError('Failed to remove favourite'));
     }

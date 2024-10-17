@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:rugmi/theme/app_colors.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rugmi/bloc/searches/searches_bloc.dart';
-import 'package:rugmi/bloc/favourites/favourites_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:rugmi/bloc/searches/searches_bloc_event.dart';
+import 'package:rugmi/bloc/favourites/favourites_bloc.dart';
 import 'package:rugmi/bloc/favourites/favourites_bloc_event.dart';
+import 'package:rugmi/bloc/searches/searches_bloc.dart';
+import 'package:rugmi/bloc/searches/searches_bloc_event.dart';
+import 'package:rugmi/theme/app_colors.dart';
 
 class SettingsModal extends StatelessWidget {
   const SettingsModal({super.key});
@@ -30,11 +30,11 @@ class SettingsModal extends StatelessWidget {
             children: [
               Center(
                 child: Padding(
-                  padding: EdgeInsets.only(top: 35.0),
+                  padding: const EdgeInsets.only(top: 35),
                   child: Text(
-                    AppLocalizations.of(context)!.clearFavourites,
+                    AppLocalizations.of(context).clearFavourites,
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                       color: AppColors.headerTextColor,
@@ -72,8 +72,8 @@ class SettingsModal extends StatelessWidget {
         context.read<SearchesBloc>().add(FetchGallery());
       },
       child: Text(
-        AppLocalizations.of(context)!.clearHistory,
-        style: TextStyle(
+        AppLocalizations.of(context).clearHistory,
+        style: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w500,
           color: AppColors.textWhite,
@@ -99,8 +99,8 @@ class SettingsModal extends StatelessWidget {
         context.read<FavouritesBloc>().add(ClearFavourites());
       },
       child: Text(
-        AppLocalizations.of(context)!.clearFavourites,
-        style: TextStyle(
+        AppLocalizations.of(context).clearFavourites,
+        style: const TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w500,
           color: AppColors.textWhite,

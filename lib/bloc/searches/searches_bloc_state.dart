@@ -22,53 +22,48 @@ class DropdownVisible extends SearchesState {}
 class SearchHistoryCleared extends SearchesState {}
 
 class GalleryLoaded extends SearchesState {
+  const GalleryLoaded(this.galleryItems);
   final List<dynamic> galleryItems;
-
-  GalleryLoaded(this.galleryItems);
 
   @override
   List<Object?> get props => [galleryItems];
 }
 
 class GalleryError extends SearchesState {
+  const GalleryError(this.message);
   final String message;
-  GalleryError(this.message);
 
   @override
   List<Object?> get props => [message];
 }
 
 class SearchesLoaded extends SearchesState {
-  final List<dynamic> searchResults;
-
   const SearchesLoaded(this.searchResults);
+  final List<dynamic> searchResults;
 
   @override
   List<Object?> get props => [searchResults];
 }
 
 class RecentSearchesLoaded extends SearchesState {
-  final List<String> recentSearches;
-
   const RecentSearchesLoaded(this.recentSearches);
+  final List<String> recentSearches;
 
   @override
   List<Object?> get props => [recentSearches];
 }
 
 class SearchError extends SearchesState {
-  final String message;
-
   const SearchError(this.message);
+  final String message;
 
   @override
   List<Object?> get props => [message];
 }
 
 class SearchActiveState extends SearchesState {
-  final bool isActive;
-
   const SearchActiveState(this.isActive);
+  final bool isActive;
 
   @override
   List<Object?> get props => [isActive];

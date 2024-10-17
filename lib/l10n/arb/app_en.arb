@@ -31,5 +31,13 @@
   "removeFromFavourites": "Remove from Favourites",
   "@removeFromFavourites": {
     "description": "Text for the Remove from Favourites button"
+  },
+  "uhOh": "Uh Oh! An error occurred while creating the gallery",
+  "@uhOh": {
+    "description": "Message for Home Screen when Images can't be fetched from the API"
+  },
+  "struggling": "Seems like we're struggling to find the gallery right now",
+  "@struggling": {
+    "description": "Message for Home Screen when the images list is empty for te"
   }
 }

@@ -15,8 +15,11 @@ class HiveRepo {
     return Hive.box(boxName);
   }
 
-  static Future<void> addItem(String boxName, dynamic item,
-      {String? key}) async {
+  static Future<void> addItem(
+    String boxName,
+    dynamic item, {
+    String? key,
+  }) async {
     final box = getBox(boxName);
 
     if (key != null) {
@@ -48,8 +51,9 @@ class HiveRepo {
 
   static Future<void> addSearchQuery(String query) async {
     final box = getBox(searchesBox);
-    List<String> recentSearches =
-        box.get(recentSearchesKey, defaultValue: <String>[])!.cast<String>();
+    final recentSearches =
+        (box.get(recentSearchesKey, defaultValue: <String>[]) as List)
+            .cast<String>();
 
     if (!recentSearches.contains(query)) {
       recentSearches.add(query);
@@ -59,7 +63,9 @@ class HiveRepo {
 
   static List<String> getRecentSearches() {
     final box = getBox(searchesBox);
-    return box.get(recentSearchesKey, defaultValue: <String>[])!.cast<String>();
+    return (box.get(recentSearchesKey, defaultValue: <String>[])
+            as List<dynamic>)
+        .cast<String>();
   }
 
   static Future<void> clearRecentSearches() async {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rugmi/views/home_screen.dart';
-import 'package:rugmi/views/favourites_screen.dart';
-import 'package:rugmi/widgets/primary_scaffold.dart';
 import 'package:rugmi/views/detailed_view_screen.dart';
+import 'package:rugmi/views/favourites_screen.dart';
+import 'package:rugmi/views/home_screen.dart';
+import 'package:rugmi/widgets/primary_scaffold.dart';
 
 GoRouter createRouter() {
   return GoRouter(
@@ -32,8 +32,7 @@ GoRouter createRouter() {
           GoRoute(
             path: '/details',
             builder: (BuildContext context, GoRouterState state) {
-              final Map<String, dynamic> extra =
-                  state.extra as Map<String, dynamic>;
+              final extra = state.extra! as Map<String, dynamic>;
 
               if (!extra.containsKey('imageUrl')) {
                 return const Scaffold(
@@ -47,6 +46,7 @@ GoRouter createRouter() {
                 imageUrl: extra['imageUrl'] as String,
                 title: extra['title'] as String,
                 points: extra['points'] as int,
+                isFavourite: extra['isFavourite'] as bool? ?? false,
               );
             },
           ),

@@ -2,12 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rugmi/theme/app_colors.dart';
 
 class ImageCard extends StatelessWidget {
-  final String imageUrl;
-  final String title;
-  final int points;
-  final double width;
-  final double? height;
-
   const ImageCard({
     required this.imageUrl,
     required this.title,
@@ -16,6 +10,11 @@ class ImageCard extends StatelessWidget {
     super.key,
     this.height,
   });
+  final String imageUrl;
+  final String title;
+  final int points;
+  final double width;
+  final double? height;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +39,7 @@ class ImageCard extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -55,7 +54,7 @@ class ImageCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    '${points.toString()} points',
+                    '$points points',
                     style: TextStyle(
                       fontSize: width * 0.06,
                       fontWeight: FontWeight.w600,

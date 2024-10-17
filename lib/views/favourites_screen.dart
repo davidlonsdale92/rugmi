@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rugmi/bloc/favourites/favourites_bloc.dart';
+import 'package:rugmi/bloc/favourites/favourites_bloc_state.dart';
 import 'package:rugmi/theme/app_colors.dart';
 import 'package:rugmi/widgets/image_card.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rugmi/bloc/favourites/favourites_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:rugmi/bloc/favourites/favourites_bloc_state.dart';
 
 class FavouritesScreen extends StatelessWidget {
   const FavouritesScreen({super.key});
@@ -46,7 +46,6 @@ class FavouritesScreen extends StatelessWidget {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(height: 20),
           Image.asset(
@@ -56,7 +55,7 @@ class FavouritesScreen extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 50.0),
+            padding: const EdgeInsets.symmetric(horizontal: 50),
             child: Text(
               message,
               textAlign: TextAlign.center,
@@ -66,7 +65,7 @@ class FavouritesScreen extends StatelessWidget {
                 color: AppColors.headerTextColor,
               ),
             ),
-          )
+          ),
         ],
       ),
     );
@@ -76,7 +75,6 @@ class FavouritesScreen extends StatelessWidget {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(height: 20),
           Image.asset(
@@ -86,32 +84,34 @@ class FavouritesScreen extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 50.0),
+            padding: const EdgeInsets.symmetric(horizontal: 50),
             child: Text(
-              AppLocalizations.of(context)!.noFavourites,
+              AppLocalizations.of(context).noFavourites,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: AppColors.headerTextColor,
               ),
             ),
-          )
+          ),
         ],
       ),
     );
   }
 
   Widget _buildFavouritesContent(
-      List<dynamic> favourites, BuildContext context) {
-    double cardWidth = MediaQuery.of(context).size.width / 2;
+    List<dynamic> favourites,
+    BuildContext context,
+  ) {
+    final cardWidth = MediaQuery.of(context).size.width / 2;
 
     return GridView.builder(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        crossAxisSpacing: 8.0,
-        mainAxisSpacing: 8.0,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
         childAspectRatio: 0.7,
       ),
       itemCount: favourites.length,
@@ -126,7 +126,7 @@ class FavouritesScreen extends StatelessWidget {
             context.push(
               '/details',
               extra: {
-                'imageUrl': imageUrl!,
+                'imageUrl': imageUrl,
                 'title': title,
                 'points': points,
               },
@@ -134,9 +134,9 @@ class FavouritesScreen extends StatelessWidget {
           },
           child: imageUrl != null
               ? ImageCard(
-                  imageUrl: imageUrl!,
-                  title: title,
-                  points: points,
+                  imageUrl: imageUrl as String,
+                  title: title as String,
+                  points: points as int,
                   width: cardWidth,
                   height: 200,
                 )
