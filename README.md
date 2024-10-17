@@ -13,9 +13,8 @@ For this project I started out in [Figma](https://www.figma.com/design/GV0LV0pmy
 
 <p align="center">
   <picture>
-    <img src="[./assets/images/repo_image.png](https://github.com/user-attachments/assets/89cadb21-6ee2-4c2f-8bca-ec4c2f117f79)">
+    <img src="https://github.com/user-attachments/assets/89cadb21-6ee2-4c2f-8bca-ec4c2f117f79">
   </picture>
-  <h4 align="center">An interpretation of the Imgur application using Flutter!</h4>
 </p>
 
 ---
