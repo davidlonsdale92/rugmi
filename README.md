@@ -11,6 +11,13 @@
 
 For this project I started out in [Figma](https://www.figma.com/design/GV0LV0pmyXxfweXvBi6VYR/Rugmi-app?node-id=0-1&t=NIKVUKn1YVBNpHcI-1) designing how I wanted the application to look and to prototype navigation in the app. I always find the prototyping stage a lot of fun and it can be very easy to get lost in the process, but the end result is invaluable and provides an amazing kick off point for a project.
 
+<p align="center">
+  <picture>
+    <img src="[./assets/images/repo_image.png](https://github.com/user-attachments/assets/89cadb21-6ee2-4c2f-8bca-ec4c2f117f79)">
+  </picture>
+  <h4 align="center">An interpretation of the Imgur application using Flutter!</h4>
+</p>
+
 ---
 
 ### Implementation
