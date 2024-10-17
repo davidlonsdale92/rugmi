@@ -9,13 +9,13 @@ abstract class SearchesEvent extends Equatable {
 
 class FetchGallery extends SearchesEvent {}
 
-class LoadRecentSearches extends SearchesEvent {}
-
-class ClearSearchHistory extends SearchesEvent {}
-
 class ShowDropdown extends SearchesEvent {}
 
 class HideDropdown extends SearchesEvent {}
+
+class LoadRecentSearches extends SearchesEvent {}
+
+class ClearSearchHistory extends SearchesEvent {}
 
 class SearchImages extends SearchesEvent {
   final String query;

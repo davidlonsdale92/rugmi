@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rugmi/bloc/favourites/favourites_bloc.dart';
-import 'package:rugmi/bloc/favourites/favourites_bloc_state.dart';
 import 'package:rugmi/theme/app_colors.dart';
 import 'package:rugmi/widgets/image_card.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rugmi/bloc/favourites/favourites_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:rugmi/bloc/favourites/favourites_bloc_state.dart';
 
 class FavouritesScreen extends StatelessWidget {
   const FavouritesScreen({super.key});
@@ -30,7 +31,7 @@ class FavouritesScreen extends StatelessWidget {
           } else if (state is FavouritesError) {
             return _buildNetworkErrorContent(state.message);
           } else if (state is FavouritesEmpty) {
-            return _buildEmptyFavouritesContent();
+            return _buildEmptyFavouritesContent(context);
           } else if (state is FavouritesLoaded) {
             return _buildFavouritesContent(state.favourites, context);
           } else {
@@ -71,7 +72,7 @@ class FavouritesScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyFavouritesContent() {
+  Widget _buildEmptyFavouritesContent(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -84,10 +85,10 @@ class FavouritesScreen extends StatelessWidget {
             height: 300,
           ),
           const SizedBox(height: 20),
-          const Padding(
+          Padding(
             padding: EdgeInsets.symmetric(horizontal: 50.0),
             child: Text(
-              'Save your favourite posts to see them here',
+              AppLocalizations.of(context)!.noFavourites,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20,

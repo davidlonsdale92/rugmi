@@ -1,13 +1,13 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rugmi/services/hive_init.dart';
 import 'favourites_bloc_event.dart';
 import 'favourites_bloc_state.dart';
+import 'package:rugmi/services/hive_init.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FavouritesBloc extends Bloc<FavouritesEvent, FavouritesState> {
   FavouritesBloc() : super(FavouritesLoading()) {
+    on<AddFavourite>(_onAddFavourite);
     on<LoadFavourites>(_onLoadFavourites);
     on<ClearFavourites>(_onClearFavourites);
-    on<AddFavourite>(_onAddFavourite);
     on<RemoveFavourite>(_onRemoveFavourite);
   }
 

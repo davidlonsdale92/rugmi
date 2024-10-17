@@ -9,8 +9,8 @@ abstract class NavigationEvent extends Equatable {
 
 class NavigateToHome extends NavigationEvent {}
 
-class NavigateToFavourites extends NavigationEvent {}
+class NavigateToDetails extends NavigationEvent {}
 
 class NavigateToSettings extends NavigationEvent {}
 
-class NavigateToDetails extends NavigationEvent {}
+class NavigateToFavourites extends NavigationEvent {}

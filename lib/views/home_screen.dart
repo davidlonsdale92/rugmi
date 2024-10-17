@@ -1,14 +1,13 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rugmi/bloc/searches/searches_bloc.dart';
-import 'package:rugmi/bloc/searches/searches_bloc_event.dart';
-import 'package:rugmi/bloc/searches/searches_bloc_state.dart';
 import 'package:rugmi/theme/app_colors.dart';
 import 'package:rugmi/widgets/image_card.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rugmi/bloc/searches/searches_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:rugmi/bloc/searches/searches_bloc_event.dart';
+import 'package:rugmi/bloc/searches/searches_bloc_state.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -99,8 +98,6 @@ class _HomeScreenState extends State<HomeScreen> {
       child: BlocBuilder<SearchesBloc, SearchesState>(
         builder: (context, state) {
           bool isSearchActive = state is SearchActiveState;
-          print('State: $state');
-          print('isSearchActive: $isSearchActive');
 
           return AppBar(
             backgroundColor: AppColors.backgroundColor,
@@ -118,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     fontSize: 16,
                   ),
                 ),
-                hintText: 'Images, #tags, @users oh my!',
+                hintText: AppLocalizations.of(context)!.hintText,
                 hintStyle: WidgetStateProperty.all(
                   const TextStyle(
                     color: AppColors.subtitleTextColor,
@@ -212,8 +209,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   context.read<SearchesBloc>().add(ClearSearchHistory());
                   context.read<SearchesBloc>().add(FetchGallery());
                 },
-                child: const Text(
-                  'Clear Search History',
+                child: Text(
+                  AppLocalizations.of(context)!.clearHistory,
                   style: const TextStyle(
                     color: AppColors.primary,
                     fontSize: 16,

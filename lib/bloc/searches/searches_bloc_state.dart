@@ -11,15 +11,15 @@ class HomeInitial extends SearchesState {}
 
 class GalleryLoading extends SearchesState {}
 
+class DropdownHidden extends SearchesState {}
+
 class SearchesInitial extends SearchesState {}
 
 class SearchesLoading extends SearchesState {}
 
-class SearchHistoryCleared extends SearchesState {}
-
 class DropdownVisible extends SearchesState {}
 
-class DropdownHidden extends SearchesState {}
+class SearchHistoryCleared extends SearchesState {}
 
 class GalleryLoaded extends SearchesState {
   final List<dynamic> galleryItems;

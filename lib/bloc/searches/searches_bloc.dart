@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
-import 'package:rugmi/api/imgur_api.dart';
-import 'package:rugmi/services/hive_init.dart';
 import 'searches_bloc_event.dart';
 import 'searches_bloc_state.dart';
+import 'package:get_it/get_it.dart';
+import 'package:flutter/material.dart';
+import 'package:rugmi/api/imgur_api.dart';
+import 'package:rugmi/services/hive_init.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SearchesBloc extends Bloc<SearchesEvent, SearchesState> {
   final ImgurAPI _imgurAPI = GetIt.I<ImgurAPI>();

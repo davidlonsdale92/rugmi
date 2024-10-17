@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:rugmi/theme/app_colors.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rugmi/bloc/modal/modal_bloc.dart';
+import 'package:rugmi/widgets/settings_modal.dart';
+import 'package:rugmi/bloc/modal/modal_bloc_state.dart';
+import 'package:rugmi/bloc/modal/modal_bloc_event.dart';
+import 'package:rugmi/bloc/navigation/navigation_bloc.dart';
 import 'package:rugmi/bloc/favourites/favourites_bloc.dart';
 import 'package:rugmi/bloc/favourites/favourites_bloc_event.dart';
-import 'package:rugmi/bloc/modal/modal_bloc.dart';
-import 'package:rugmi/bloc/modal/modal_bloc_event.dart';
-import 'package:rugmi/bloc/modal/modal_bloc_state.dart';
-import 'package:rugmi/bloc/navigation/navigation_bloc.dart';
 import 'package:rugmi/bloc/navigation/navigation_bloc_event.dart';
 import 'package:rugmi/bloc/navigation/navigation_bloc_state.dart';
-import 'package:rugmi/theme/app_colors.dart';
-import 'package:rugmi/widgets/settings_modal.dart';
 
 class PrimaryScaffold extends StatelessWidget {
   final dynamic child;

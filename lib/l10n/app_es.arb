@@ -1,0 +1,35 @@
+{
+  "@@locale": "es",
+  "hintText": "Imágenes, #etiquetas, @usuarios ¡ay caramba!",
+  "@hintText": {
+    "description": "Texto de sugerencia para la barra de búsqueda"
+  },
+  "noFavourites": "Guarda tus publicaciones favoritas para verlas aquí",
+  "@noFavourites": {
+    "description": "Mensaje mostrado en la aplicación cuando no hay favoritos guardados"
+  },
+  "settings": "Configuración",
+  "@settings": {
+    "description": "Texto para el modal de Configuración"
+  },
+  "back": "Atrás",
+  "@back": {
+    "description": "Texto para el botón de Atrás"
+  },
+  "clearHistory": "Borrar Historial de Búsqueda",
+  "@clearHistory": {
+    "description": "Texto para el botón de Borrar Historial de Búsqueda"
+  },
+  "clearFavourites": "Eliminar Todos los Favoritos",
+  "@clearFavourites": {
+    "description": "Texto para el botón de Eliminar Todos los Favoritos"
+  },
+  "addToFavourites": "Añadir a Favoritos",
+  "@addToFavourites": {
+    "description": "Texto para el botón de Añadir a Favoritos"
+  },
+  "removeFromFavourites": "Eliminar de Favoritos",
+  "@removeFromFavourites": {
+    "description": "Texto para el botón de Eliminar de Favoritos"
+  }
+}

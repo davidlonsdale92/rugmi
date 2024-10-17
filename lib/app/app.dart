@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rugmi/bloc/favourites/favourites_bloc.dart';
-import 'package:rugmi/bloc/favourites/favourites_bloc_event.dart';
-import 'package:rugmi/bloc/modal/modal_bloc.dart';
-import 'package:rugmi/bloc/navigation/navigation_bloc.dart';
-import 'package:rugmi/bloc/searches/searches_bloc.dart';
-import 'package:rugmi/bloc/searches/searches_bloc_event.dart';
-import 'package:rugmi/navigation/router.dart';
 import 'package:rugmi/theme/theme.dart';
+import 'package:rugmi/navigation/router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rugmi/bloc/modal/modal_bloc.dart';
+import 'package:rugmi/bloc/searches/searches_bloc.dart';
+import 'package:rugmi/bloc/favourites/favourites_bloc.dart';
+import 'package:rugmi/bloc/navigation/navigation_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:rugmi/bloc/searches/searches_bloc_event.dart';
+import 'package:rugmi/bloc/favourites/favourites_bloc_event.dart';
 
 class App extends StatefulWidget {
   const App({super.key});

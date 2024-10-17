@@ -1,88 +1,103 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:mockito/mockito.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_test/hive_test.dart';
+
 import 'package:rugmi/services/hive_init.dart';
 
-class MockBox extends Mock implements Box {}
-
 void main() {
-  late MockBox mockSearchBox;
-  late MockBox mockFavouritesBox;
+  setUp(() async {
+    await setUpTestHive();
+  });
 
-  setUp(() {
-    mockSearchBox = MockBox();
-    mockFavouritesBox = MockBox();
-    Hive.initFlutter();
-    when(Hive.box(HiveRepo.searchesBox)).thenReturn(mockSearchBox);
-    when(Hive.box(HiveRepo.favouritesBox)).thenReturn(mockFavouritesBox);
+  tearDown(() async {
+    await tearDownTestHive();
   });
 
   group('HiveRepo Tests', () {
     test('addItem adds an item to the box without a key', () async {
-      when(mockSearchBox.add('item')).thenAnswer((_) async => 1);
+      // Open the box
+      var box = await Hive.openBox(HiveRepo.searchesBox);
+
+      // Call the method under test
       await HiveRepo.addItem(HiveRepo.searchesBox, 'item');
-      verify(mockSearchBox.add('item')).called(1);
+
+      // Verify the item was added
+      expect(box.values, contains('item'));
     });
 
     test('addItem adds an item to the box with a key', () async {
-      when(mockSearchBox.put('key', 'item')).thenAnswer((_) async => 1);
+      var box = await Hive.openBox(HiveRepo.searchesBox);
+
       await HiveRepo.addItem(HiveRepo.searchesBox, 'item', key: 'key');
-      verify(mockSearchBox.put('key', 'item')).called(1);
+
+      expect(box.get('key'), 'item');
     });
 
-    test('getItems returns all items when no key is provided', () {
-      when(mockSearchBox.values).thenReturn(['item1', 'item2']);
+    test('getItems returns all items when no key is provided', () async {
+      var box = await Hive.openBox(HiveRepo.searchesBox);
+      await box.addAll(['item1', 'item2']);
+
       final items = HiveRepo.getItems(HiveRepo.searchesBox);
+
       expect(items, ['item1', 'item2']);
-      verify(mockSearchBox.values).called(1);
     });
 
-    test('getItems returns items by key', () {
-      when(mockSearchBox.get('key', defaultValue: <dynamic>[]))
-          .thenReturn(['item1', 'item2']);
+    test('getItems returns items by key', () async {
+      var box = await Hive.openBox(HiveRepo.searchesBox);
+      await box.put('key', ['item1', 'item2']);
+
       final items = HiveRepo.getItems(HiveRepo.searchesBox, key: 'key');
+
       expect(items, ['item1', 'item2']);
-      verify(mockSearchBox.get('key', defaultValue: <dynamic>[])).called(1);
     });
 
     test('clearBox clears the box', () async {
-      when(mockSearchBox.clear()).thenAnswer((_) async => 0);
+      var box = await Hive.openBox(HiveRepo.searchesBox);
+      await box.add('item');
+
       await HiveRepo.clearBox(HiveRepo.searchesBox);
-      verify(mockSearchBox.clear()).called(1);
+
+      expect(box.isEmpty, true);
     });
 
     test('removeItem removes item by index', () async {
-      when(mockSearchBox.deleteAt(0)).thenAnswer((_) async => 0);
+      var box = await Hive.openBox(HiveRepo.searchesBox);
+      await box.addAll(['item1', 'item2']);
+
       await HiveRepo.removeItem(HiveRepo.searchesBox, 0);
-      verify(mockSearchBox.deleteAt(0)).called(1);
+
+      expect(box.values, ['item2']);
     });
 
     test('addSearchQuery adds a query to recent searches', () async {
-      List<String> mockRecentSearches = ['search1'];
-      when(mockSearchBox.get(HiveRepo.recentSearchesKey,
-          defaultValue: <String>[])).thenReturn(mockRecentSearches);
+      var box = await Hive.openBox(HiveRepo.searchesBox);
+      await box.put(HiveRepo.recentSearchesKey, ['search1']);
 
       await HiveRepo.addSearchQuery('search2');
-      mockRecentSearches.add('search2');
-      verify(mockSearchBox.put(HiveRepo.recentSearchesKey, mockRecentSearches))
-          .called(1);
+
+      final searches = box.get(HiveRepo.recentSearchesKey) as List<String>;
+
+      expect(searches, ['search1', 'search2']);
     });
 
-    test('getRecentSearches returns a list of recent searches', () {
-      when(mockSearchBox.get(HiveRepo.recentSearchesKey,
-          defaultValue: <String>[])).thenReturn(['search1', 'search2']);
+    test('getRecentSearches returns a list of recent searches', () async {
+      var box = await Hive.openBox(HiveRepo.searchesBox);
+      await box.put(HiveRepo.recentSearchesKey, ['search1', 'search2']);
+
       final searches = HiveRepo.getRecentSearches();
+
       expect(searches, ['search1', 'search2']);
-      verify(mockSearchBox
-          .get(HiveRepo.recentSearchesKey, defaultValue: <String>[])).called(1);
     });
 
     test('clearRecentSearches clears recent searches', () async {
-      when(mockSearchBox.put(HiveRepo.recentSearchesKey, <String>[]))
-          .thenAnswer((_) async => 1);
+      var box = await Hive.openBox(HiveRepo.searchesBox);
+      await box.put(HiveRepo.recentSearchesKey, ['search1', 'search2']);
+
       await HiveRepo.clearRecentSearches();
-      verify(mockSearchBox.put(HiveRepo.recentSearchesKey, <String>[]))
-          .called(1);
+
+      final searches = box.get(HiveRepo.recentSearchesKey) as List<String>;
+
+      expect(searches, <String>[]);
     });
   });
 }

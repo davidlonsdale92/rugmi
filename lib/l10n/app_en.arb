@@ -1,6 +1,35 @@
 {
-  "helloWorld": "Hello World!",
-  "@helloWorld": {
-    "description": "The conventional newborn programmer greeting"
+  "@@locale": "en",
+  "hintText": "Images, #tags, @users oh my!",
+  "@hintText": {
+    "description": "Hint text for the search bar"
+  },
+  "noFavourites": "Save your favourite posts to see them here",
+  "@noFavourites": {
+    "description": "Message shown in the app when there are no favourites stored in"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Text for the Settings modal"
+  },
+  "back": "Back",
+  "@back": {
+    "description": "Text for the Back button"
+  },
+  "clearHistory": "Clear Search History",
+  "@clearHistory": {
+    "description": "Text for the Clear Search History buttons"
+  },
+  "clearFavourites": "Remove All Favourites",
+  "@clearFavourites": {
+    "description": "Text for the Remove All Favourites button"
+  },
+  "addToFavourites": "Add to Favourites",
+  "@addToFavourites": {
+    "description": "Text for the Add to  Favourites button"
+  },
+  "removeFromFavourites": "Remove from Favourites",
+  "@removeFromFavourites": {
+    "description": "Text for the Remove from Favourites button"
   }
 }

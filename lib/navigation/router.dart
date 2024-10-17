@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rugmi/views/detailed_view_screen.dart';
-import 'package:rugmi/views/favourites_screen.dart';
 import 'package:rugmi/views/home_screen.dart';
+import 'package:rugmi/views/favourites_screen.dart';
 import 'package:rugmi/widgets/primary_scaffold.dart';
+import 'package:rugmi/views/detailed_view_screen.dart';
 
 GoRouter createRouter() {
   return GoRouter(

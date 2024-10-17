@@ -1,6 +1,6 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'navigation_bloc_event.dart';
 import 'navigation_bloc_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   NavigationBloc() : super(const HomePageState()) {

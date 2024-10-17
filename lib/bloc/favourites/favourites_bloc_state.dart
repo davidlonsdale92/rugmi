@@ -7,18 +7,9 @@ abstract class FavouritesState extends Equatable {
   List<Object?> get props => [];
 }
 
-class FavouritesLoading extends FavouritesState {}
-
-class FavouritesLoaded extends FavouritesState {
-  final List<dynamic> favourites;
-
-  const FavouritesLoaded(this.favourites);
-
-  @override
-  List<Object?> get props => [favourites];
-}
-
 class FavouritesEmpty extends FavouritesState {}
+
+class FavouritesLoading extends FavouritesState {}
 
 class FavouritesError extends FavouritesState {
   final String message;
@@ -27,4 +18,13 @@ class FavouritesError extends FavouritesState {
 
   @override
   List<Object?> get props => [message];
+}
+
+class FavouritesLoaded extends FavouritesState {
+  final List<dynamic> favourites;
+
+  const FavouritesLoaded(this.favourites);
+
+  @override
+  List<Object?> get props => [favourites];
 }

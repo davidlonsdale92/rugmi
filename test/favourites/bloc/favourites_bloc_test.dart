@@ -1,101 +1,91 @@
-// import 'package:flutter_test/flutter_test.dart';
-// import 'package:bloc_test/bloc_test.dart';
-// import 'package:mockito/mockito.dart';
-// import 'package:mocktail/mocktail.dart';
-// import 'package:rugmi/bloc/favourites/favourites_bloc.dart';
-// import 'package:rugmi/bloc/favourites/favourites_bloc_event.dart';
-// import 'package:rugmi/bloc/favourites/favourites_bloc_state.dart';
-// import 'package:rugmi/services/hive_init.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_test/hive_test.dart';
 
-// class MockHiveRepo extends Mock implements HiveRepo {}
+import 'package:rugmi/services/hive_init.dart';
 
-// void main() {
-//   group('FavouritesBloc', () {
-//     late MockHiveRepo mockHiveRepo;
+void main() {
+  setUp(() async {
+    await setUpTestHive();
+    await Hive.openBox(HiveRepo.favouritesBox);
+  });
 
-//     setUp(() {
-//       mockHiveRepo = MockHiveRepo();
-//     });
+  tearDown(() async {
+    await Hive.box(HiveRepo.favouritesBox).close();
+    await tearDownTestHive();
+  });
 
-//     // Test initial state is FavouritesLoading
-//     test('initial state is FavouritesLoading', () {
-//       final favouritesBloc = FavouritesBloc();
-//       expect(favouritesBloc.state, FavouritesLoading());
-//     });
+  group('HiveRepo FavouritesBox Tests', () {
+    test('addItem adds an item to the favouritesBox without a key', () async {
+      var box = Hive.box(HiveRepo.favouritesBox);
 
-//     // Test when LoadFavourites is added and Hive has items
-//     blocTest<FavouritesBloc, FavouritesState>(
-//       'emits [FavouritesLoaded] when LoadFavourites is added and Hive has items',
-//       build: () {
-//         when(mockHiveRepo.getItems(HiveRepo.favouritesBox) as Function())
-//             .thenReturn(['item1']);
-//         return FavouritesBloc();
-//       },
-//       act: (bloc) => bloc.add(LoadFavourites()),
-//       expect: () => [
-//         FavouritesLoaded(['item1'])
-//       ],
-//     );
+      await HiveRepo.addItem(HiveRepo.favouritesBox, {'imageUrl': 'url1'});
 
-//     // Test when LoadFavourites is added and Hive is empty
-//     blocTest<FavouritesBloc, FavouritesState>(
-//       'emits [FavouritesEmpty] when LoadFavourites is added and Hive is empty',
-//       build: () {
-//         when(mockHiveRepo.getItems(HiveRepo.favouritesBox) as Function())
-//             .thenReturn([]);
-//         return FavouritesBloc();
-//       },
-//       act: (bloc) => bloc.add(LoadFavourites()),
-//       expect: () => [FavouritesEmpty()],
-//     );
+      final values = box.values.toList();
 
-//     // Test when ClearFavourites is added
-//     blocTest<FavouritesBloc, FavouritesState>(
-//       'emits [FavouritesEmpty] when ClearFavourites is added',
-//       build: () {
-//         when(mockHiveRepo.clearBox(HiveRepo.favouritesBox) as Function())
-//             .thenAnswer((_) async => {});
-//         return FavouritesBloc();
-//       },
-//       act: (bloc) => bloc.add(ClearFavourites()),
-//       expect: () => [FavouritesEmpty()],
-//     );
+      expect(
+          values,
+          equals([
+            {'imageUrl': 'url1'}
+          ]));
+    });
 
-//     // Test when AddFavourite is added
-//     blocTest<FavouritesBloc, FavouritesState>(
-//       'emits [FavouritesLoaded] when AddFavourite is added',
-//       build: () {
-//         when(mockHiveRepo.addItem(HiveRepo.favouritesBox, any) as Function())
-//             .thenAnswer((_) async => {});
-//         when(mockHiveRepo.getItems(HiveRepo.favouritesBox) as Function())
-//             .thenReturn(['item1', 'item2']);
-//         return FavouritesBloc();
-//       },
-//       act: (bloc) => bloc.add(AddFavourite('imageId', {'imageUrl': 'item2'})),
-//       expect: () => [
-//         FavouritesLoaded(['item1', 'item2'])
-//       ],
-//     );
+    test('addItem adds an item to the favouritesBox with a key', () async {
+      var box = Hive.box(HiveRepo.favouritesBox);
 
-//     // Test when RemoveFavourite is added
-//     blocTest<FavouritesBloc, FavouritesState>(
-//       'emits [FavouritesLoaded] when RemoveFavourite is added',
-//       build: () {
-//         when(mockHiveRepo.getItems(HiveRepo.favouritesBox) as Function())
-//             .thenReturn([
-//           {'imageUrl': 'item1'},
-//           {'imageUrl': 'item2'}
-//         ]);
-//         when(mockHiveRepo.removeItem(HiveRepo.favouritesBox, 1) as Function())
-//             .thenAnswer((_) async => {});
-//         return FavouritesBloc();
-//       },
-//       act: (bloc) => bloc.add(RemoveFavourite('item2')),
-//       expect: () => [
-//         FavouritesLoaded([
-//           {'imageUrl': 'item1'}
-//         ])
-//       ],
-//     );
-//   });
-// }
+      await HiveRepo.addItem(HiveRepo.favouritesBox, {'imageUrl': 'url1'},
+          key: 'key1');
+
+      expect(box.get('key1'), {'imageUrl': 'url1'});
+    });
+
+    test(
+        'getItems returns all items from favouritesBox when no key is provided',
+        () async {
+      var box = Hive.box(HiveRepo.favouritesBox);
+      await box.addAll([
+        {'imageUrl': 'url1'},
+        {'imageUrl': 'url2'}
+      ]);
+
+      final items = HiveRepo.getItems(HiveRepo.favouritesBox);
+
+      expect(items, [
+        {'imageUrl': 'url1'},
+        {'imageUrl': 'url2'}
+      ]);
+    });
+
+    test('getItems returns items by key from favouritesBox', () async {
+      var box = Hive.box(HiveRepo.favouritesBox);
+      await box.put('key1', {'imageUrl': 'url1'});
+
+      final item = HiveRepo.getItems(HiveRepo.favouritesBox, key: 'key1');
+
+      expect(item, {'imageUrl': 'url1'});
+    });
+
+    test('clearBox clears the favouritesBox', () async {
+      var box = Hive.box(HiveRepo.favouritesBox);
+      await box.add({'imageUrl': 'url1'});
+
+      await HiveRepo.clearBox(HiveRepo.favouritesBox);
+
+      expect(box.isEmpty, true);
+    });
+
+    test('removeItem removes item by index from favouritesBox', () async {
+      var box = Hive.box(HiveRepo.favouritesBox);
+      await box.addAll([
+        {'imageUrl': 'url1'},
+        {'imageUrl': 'url2'}
+      ]);
+
+      await HiveRepo.removeItem(HiveRepo.favouritesBox, 0);
+
+      expect(box.values.toList(), [
+        {'imageUrl': 'url2'}
+      ]);
+    });
+  });
+}

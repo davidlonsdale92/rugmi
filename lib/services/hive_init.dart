@@ -26,11 +26,11 @@ class HiveRepo {
     }
   }
 
-  static List<dynamic> getItems(String boxName, {String? key}) {
+  static dynamic getItems(String boxName, {String? key}) {
     final box = getBox(boxName);
 
     if (key != null) {
-      return box.get(key, defaultValue: <dynamic>[]).cast<dynamic>();
+      return box.get(key);
     } else {
       return box.values.toList();
     }
