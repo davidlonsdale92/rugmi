@@ -90,13 +90,13 @@ Once you have this then just go ahead and choose which environment you want to r
 
 ```sh
 # Development
-$ flutter run --flavor development --target lib/entrypoints/main_development.dart
+$ flutter run --flavor development --target lib/main_development.dart
 
 # Staging
-$ flutter run --flavor staging --target lib/entrypoints/main_staging.dart
+$ flutter run --flavor staging --target lib/main_staging.dart
 
 # Production
-$ flutter run --flavor production --target lib/entrypoints/main_production.dart
+$ flutter run --flavor production --target lib/main_production.dart
 ```
 
 <hr style="border-top: 1px solid #bbb;" />
