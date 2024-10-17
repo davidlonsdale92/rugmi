@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rugmi/bloc/favourites/favourites_bloc.dart';
 import 'package:rugmi/bloc/favourites/favourites_bloc_event.dart';
-import 'package:rugmi/bloc/home/searches_bloc.dart';
-import 'package:rugmi/bloc/home/searches_bloc_event.dart';
+import 'package:rugmi/bloc/searches/searches_bloc.dart';
+import 'package:rugmi/bloc/searches/searches_bloc_event.dart';
 import 'package:rugmi/theme/app_colors.dart';
 
 class SettingsModal extends StatelessWidget {
