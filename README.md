@@ -14,7 +14,7 @@
 - [How to Run](#howto)
 - [Future Work and Improvements](#futurework)
 
-### Design <a name="design"></a>
+## Design <a name="design"></a>
 
 For this project I started out in [Figma](https://www.figma.com/design/GV0LV0pmyXxfweXvBi6VYR/Rugmi-app?node-id=0-1&t=NIKVUKn1YVBNpHcI-1) designing how I wanted the application to look and to prototype navigation in the app. I always find the prototyping stage a lot of fun and it can be very easy to get lost in the process, but the end result is invaluable and provides an amazing kick off point for a project.
 
@@ -26,7 +26,7 @@ For this project I started out in [Figma](https://www.figma.com/design/GV0LV0pmy
 
 <hr style="border-top: 1px solid #bbb;" />
 
-### Implementation <a name="implementation"></a>
+## Implementation <a name="implementation"></a>
 
 <div style="padding: 1px"></div>
 
@@ -60,7 +60,7 @@ As is always the case, testing when a database is involved was not fun. But luck
 
 <hr style="border-top: 1px solid #bbb;" />
 
-### How to Run <a name="howto"></a>
+## How to Run <a name="howto"></a>
 
 <div style="padding: 1px"></div>
 
@@ -101,7 +101,7 @@ $ flutter run --flavor production --target lib/entrypoints/main_production.dart
 
 <hr style="border-top: 1px solid #bbb;" />
 
-### Future Work and Improvements <a name="futurework"></a>
+## Future Work and Improvements <a name="futurework"></a>
 
 <div style="padding: 1px"></div>
 
