@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hive/hive.dart';
-import 'package:rugmi/bloc/favourites_bloc.dart';
-import 'package:rugmi/bloc/favourites_bloc_event.dart';
-import 'package:rugmi/bloc/favourites_bloc_state.dart';
+import 'package:rugmi/bloc/favourites/favourites_bloc.dart';
+import 'package:rugmi/bloc/favourites/favourites_bloc_state.dart';
 import 'package:rugmi/theme/app_colors.dart';
 import 'package:rugmi/widgets/image_card.dart';
 
@@ -13,25 +11,32 @@ class FavouritesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => FavouritesBloc()..add(LoadFavourites()),
-      child: Scaffold(
-        backgroundColor: AppColors.backgroundColor,
-        body: BlocBuilder<FavouritesBloc, FavouritesState>(
-          builder: (context, state) {
-            if (state is FavouritesLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is FavouritesError) {
-              return _buildNetworkErrorContent(state.message);
-            } else if (state is FavouritesEmpty) {
-              return _buildEmptyFavouritesContent();
-            } else if (state is FavouritesLoaded) {
-              return _buildFavouritesContent(state.favouritesBox, context);
-            } else {
-              return const SizedBox(); // Fallback for unknown state
-            }
-          },
-        ),
+    return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
+      body: BlocConsumer<FavouritesBloc, FavouritesState>(
+        listener: (context, state) {
+          if (state is FavouritesError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Error: ${state.message}'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is FavouritesLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is FavouritesError) {
+            return _buildNetworkErrorContent(state.message);
+          } else if (state is FavouritesEmpty) {
+            return _buildEmptyFavouritesContent();
+          } else if (state is FavouritesLoaded) {
+            return _buildFavouritesContent(state.favourites, context);
+          } else {
+            return const SizedBox();
+          }
+        },
       ),
     );
   }
@@ -96,7 +101,8 @@ class FavouritesScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFavouritesContent(Box box, BuildContext context) {
+  Widget _buildFavouritesContent(
+      List<dynamic> favourites, BuildContext context) {
     double cardWidth = MediaQuery.of(context).size.width / 2;
 
     return GridView.builder(
@@ -107,9 +113,9 @@ class FavouritesScreen extends StatelessWidget {
         mainAxisSpacing: 8.0,
         childAspectRatio: 0.7,
       ),
-      itemCount: box.length,
+      itemCount: favourites.length,
       itemBuilder: (context, index) {
-        final item = box.getAt(index);
+        final item = favourites[index];
         final imageUrl = item['imageUrl'];
         final title = item['title'] ?? 'Untitled';
         final points = item['points'] ?? '';
@@ -125,9 +131,9 @@ class FavouritesScreen extends StatelessWidget {
               },
             );
           },
-          child: item['imageUrl'] != null
+          child: imageUrl != null
               ? ImageCard(
-                  imageUrl: imageUrl,
+                  imageUrl: imageUrl!,
                   title: title,
                   points: points,
                   width: cardWidth,
