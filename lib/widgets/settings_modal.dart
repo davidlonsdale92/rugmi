@@ -1,21 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rugmi/bloc/favourites/favourites_bloc.dart';
+import 'package:rugmi/bloc/favourites/favourites_bloc_event.dart';
+import 'package:rugmi/bloc/home/searches_bloc.dart';
+import 'package:rugmi/bloc/home/searches_bloc_event.dart';
 import 'package:rugmi/theme/app_colors.dart';
-import 'package:rugmi/utils/common.dart';
 
-class SettingsScreen extends StatelessWidget {
-  final VoidCallback onFavouritesCleared;
-
-  const SettingsScreen({
-    required this.onFavouritesCleared,
-    super.key,
-  });
-
-  void clearAllFavourites() async {
-    var box = Hive.box('favouritesBox');
-    await box.clear();
-    onFavouritesCleared();
-  }
+class SettingsModal extends StatelessWidget {
+  const SettingsModal({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +56,8 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  clearRecentSearches();
+                  context.read<SearchesBloc>().add(ClearSearchHistory());
+                  context.read<SearchesBloc>().add(FetchGallery());
                 },
                 child: const Text(
                   'Clear Search History',
@@ -90,7 +83,7 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  clearAllFavourites();
+                  context.read<FavouritesBloc>().add(ClearFavourites());
                 },
                 child: const Text(
                   'Remove All Favourites',

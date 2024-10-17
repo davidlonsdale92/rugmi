@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:hive/hive.dart';
 
 abstract class FavouritesState extends Equatable {
   const FavouritesState();
@@ -11,12 +10,12 @@ abstract class FavouritesState extends Equatable {
 class FavouritesLoading extends FavouritesState {}
 
 class FavouritesLoaded extends FavouritesState {
-  final Box favouritesBox;
+  final List<dynamic> favourites;
 
-  const FavouritesLoaded(this.favouritesBox);
+  const FavouritesLoaded(this.favourites);
 
   @override
-  List<Object?> get props => [favouritesBox];
+  List<Object?> get props => [favourites];
 }
 
 class FavouritesEmpty extends FavouritesState {}

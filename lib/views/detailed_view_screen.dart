@@ -1,14 +1,12 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive/hive.dart';
-import 'package:rugmi/bloc/favourites_bloc.dart';
-import 'package:rugmi/bloc/favourites_bloc_event.dart';
+import 'package:rugmi/bloc/favourites/favourites_bloc.dart';
+import 'package:rugmi/bloc/favourites/favourites_bloc_event.dart';
+import 'package:rugmi/bloc/favourites/favourites_bloc_state.dart';
 import 'package:rugmi/theme/app_colors.dart';
 import 'package:rugmi/widgets/detailed_image_card.dart';
 
-class DetailedImageScreen extends StatefulWidget {
+class DetailedImageScreen extends StatelessWidget {
   final String imageUrl;
   final String title;
   final int points;
@@ -21,59 +19,15 @@ class DetailedImageScreen extends StatefulWidget {
   });
 
   @override
-  _DetailedImageScreenState createState() => _DetailedImageScreenState();
-}
-
-class _DetailedImageScreenState extends State<DetailedImageScreen> {
-  late Box favouritesBox;
-  bool _isFavourite = false;
-
-  @override
-  void initState() {
-    super.initState();
-    favouritesBox = Hive.box('favouritesBox');
-    _isFavourite = isFavourite(widget.imageUrl);
-  }
-
-  bool isFavourite(String imageId) {
-    return favouritesBox.containsKey(imageId);
-  }
-
-  Future<void> addToFavourites(
-      String imageId, Map<String, dynamic> imageDetails) async {
-    try {
-      await favouritesBox.put(imageId, imageDetails);
-      log('Image $imageId added to favourites.');
-      setState(() {
-        _isFavourite = true;
-      });
-    } catch (e) {
-      log('Error adding image to favourites: $e');
-    }
-  }
-
-  Future<void> removeFromFavourites(String imageId) async {
-    try {
-      await favouritesBox.delete(imageId);
-      log('Image $imageId removed from favourites.');
-      setState(() {
-        _isFavourite = false;
-      });
-    } catch (e) {
-      log('Error removing image from favourites: $e');
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: _buildAppBar(),
-      body: _buildDetailedContent(),
+      appBar: _buildAppBar(context),
+      body: _buildDetailedContent(context),
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
       iconTheme: const IconThemeData(
@@ -116,56 +70,65 @@ class _DetailedImageScreenState extends State<DetailedImageScreen> {
     );
   }
 
-  Widget _buildDetailedContent() {
+  Widget _buildDetailedContent(BuildContext context) {
     double cardWidth = MediaQuery.of(context).size.width;
 
     return SingleChildScrollView(
       child: Column(
         children: [
           DetailedImageCard(
-            imageUrl: widget.imageUrl,
-            title: widget.title,
-            points: widget.points,
+            imageUrl: imageUrl,
+            title: title,
+            points: points,
             width: cardWidth,
           ),
           const SizedBox(height: 16),
-          ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor: WidgetStatePropertyAll(
-                  _isFavourite ? AppColors.error : AppColors.primary),
-              padding: const WidgetStatePropertyAll(
-                EdgeInsets.symmetric(vertical: 12, horizontal: 65),
-              ),
-              shape: WidgetStatePropertyAll(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-            ),
-            onPressed: () {
-              if (_isFavourite) {
-                removeFromFavourites(widget.imageUrl).then((_) {
-                  context.read<FavouritesBloc>().add(LoadFavourites());
-                });
-              } else {
-                addToFavourites(widget.imageUrl, {
-                  'title': widget.title,
-                  'points': widget.points,
-                  'imageUrl': widget.imageUrl,
-                }).then((_) {
-                  context.read<FavouritesBloc>().add(LoadFavourites());
-                });
+          BlocBuilder<FavouritesBloc, FavouritesState>(
+            builder: (context, state) {
+              bool isFavourite = false;
+              if (state is FavouritesLoaded) {
+                isFavourite = state.favourites
+                    .any((favourite) => favourite['imageUrl'] == imageUrl);
               }
+
+              return ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(
+                    isFavourite ? AppColors.error : AppColors.primary,
+                  ),
+                  padding: WidgetStateProperty.all(
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 65),
+                  ),
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+                onPressed: () {
+                  if (isFavourite) {
+                    context
+                        .read<FavouritesBloc>()
+                        .add(RemoveFavourite(imageUrl));
+                  } else {
+                    context.read<FavouritesBloc>().add(AddFavourite(imageUrl, {
+                          'title': title,
+                          'points': points,
+                          'imageUrl': imageUrl,
+                        }));
+                  }
+                },
+                child: Text(
+                  isFavourite ? 'Remove from Favourites' : 'Add to Favourites',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w400,
+                    color: AppColors.textWhite,
+                  ),
+                ),
+              );
             },
-            child: Text(
-              _isFavourite ? 'Remove from Favourites' : 'Add to Favourites',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w400,
-                color: AppColors.textWhite,
-              ),
-            ),
-          )
+          ),
         ],
       ),
     );

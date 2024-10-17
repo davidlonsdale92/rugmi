@@ -1,11 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hive/hive.dart';
-import 'package:rugmi/api/imgur_api.dart';
+import 'package:rugmi/bloc/searches/searches_bloc.dart';
+import 'package:rugmi/bloc/searches/searches_bloc_event.dart';
+import 'package:rugmi/bloc/searches/searches_bloc_state.dart';
 import 'package:rugmi/theme/app_colors.dart';
-import 'package:rugmi/utils/common.dart';
 import 'package:rugmi/widgets/image_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,197 +18,216 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<dynamic> _galleryItems = [];
-  OverlayEntry? _overlayEntry;
-  final LayerLink _layerLink = LayerLink();
-  late ImgurAPI _imgurAPI;
   late TextEditingController searchBarController;
-  bool isDropdownOpen = false;
   bool isSearchActive = false;
+  List<dynamic> galleryItems = [];
 
   @override
   void initState() {
     super.initState();
-    _imgurAPI = GetIt.I<ImgurAPI>();
-    searchBarController = TextEditingController();
-    searchBarController.addListener(_onSearchChanged);
-    _fetchGallery();
     FlutterNativeSplash.remove();
+
+    final searchesBloc = context.read<SearchesBloc>();
+
+    searchesBloc.add(FetchGallery());
+
+    searchBarController = TextEditingController();
+    searchBarController.addListener(() {
+      if (searchBarController.text.isNotEmpty) {
+        searchesBloc.add(const ToggleSearchActive(true));
+      }
+    });
   }
 
   @override
   void dispose() {
     searchBarController.dispose();
-    _overlayEntry?.remove();
     super.dispose();
-  }
-
-  void _fetchGallery() async {
-    final gallery = await _imgurAPI.fetchGallery(
-      section: 'hot',
-      sort: 'viral',
-      window: 'day',
-      page: 1,
-      showViral: true,
-      showMature: false,
-      albumPreviews: true,
-    );
-
-    if (gallery != null && gallery['data'] != null) {
-      setState(() {
-        _galleryItems = gallery['data'];
-      });
-    } else {
-      debugPrint('Failed to fetch gallery');
-    }
-  }
-
-  void _searchImages(String query) async {
-    final searchResults = await _imgurAPI.searchImages(query);
-
-    if (searchResults != null && searchResults['data'] != null) {
-      setState(() {
-        _galleryItems = searchResults['data'];
-      });
-    } else {
-      debugPrint('Failed to search images');
-    }
-  }
-
-  void saveSearchQuery(String query) async {
-    var searchesBox = Hive.box('searchesBox');
-    List<String> recentSearches = searchesBox
-            .get('recent_searches', defaultValue: <String>[])?.cast<String>() ??
-        [];
-
-    if (!recentSearches.contains(query)) {
-      recentSearches.add(query);
-      searchesBox.put('recent_searches', recentSearches);
-    }
-  }
-
-  List<String> getRecentSearches() {
-    var searchesBox = Hive.box('searchesBox');
-    return searchesBox
-            .get('recent_searches', defaultValue: <String>[])?.cast<String>() ??
-        [];
-  }
-
-  void _onSearchChanged() {
-    final query = searchBarController.text;
-    if (query.isNotEmpty && !isDropdownOpen) {
-      _showDropdown();
-    } else if (query.isEmpty && isDropdownOpen) {
-      _hideDropdown();
-    }
-
-    setState(() {
-      isSearchActive = query.isNotEmpty;
-    });
-  }
-
-  void _showDropdown() {
-    if (_overlayEntry != null) {
-      _hideDropdown();
-    }
-
-    final recentSearches = getRecentSearches();
-    if (recentSearches.isEmpty) return;
-
-    _overlayEntry = _createOverlayEntry(recentSearches);
-    Overlay.of(context).insert(_overlayEntry!);
-    isDropdownOpen = true;
-  }
-
-  void _hideDropdown() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-    isDropdownOpen = false;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: AppColors.backgroundColor,
-        appBar: _buildAppBar(),
-        body: _galleryItems.isEmpty
-            ? const Center(child: CircularProgressIndicator())
-            : _buildImageGallery());
+      backgroundColor: AppColors.backgroundColor,
+      appBar: _buildSearchBar(),
+      body: BlocBuilder<SearchesBloc, SearchesState>(
+        builder: (context, state) {
+          if (state is GalleryLoaded) {
+            galleryItems = state.galleryItems;
+
+            if (galleryItems.isEmpty) {
+              return _buildEmptyGalleryContent();
+            } else {
+              return _buildImageGallery(galleryItems);
+            }
+          } else if (state is GalleryLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is GalleryError) {
+            return _buildGalleryErrorContent('Error: ${state.message}');
+          } else if (state is RecentSearchesLoaded ||
+              state is DropdownVisible) {
+            return Stack(
+              children: [
+                _buildImageGallery(galleryItems),
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: _buildSearchHistoryDropdown(
+                    state is RecentSearchesLoaded ? state.recentSearches : [],
+                  ),
+                ),
+              ],
+            );
+          } else if (state is SearchesLoaded) {
+            return _buildImageGallery(state.searchResults);
+          } else if (state is SearchError) {
+            return _buildGalleryErrorContent(state.message);
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+    );
   }
 
-  PreferredSizeWidget _buildAppBar() {
+  PreferredSizeWidget _buildSearchBar() {
+    final searchesBloc = context.read<SearchesBloc>();
+
     return PreferredSize(
       preferredSize: const Size.fromHeight(65),
-      child: AppBar(
-        backgroundColor: AppColors.backgroundColor,
-        title: CompositedTransformTarget(
-          link: _layerLink,
-          child: SearchBar(
-            controller: searchBarController,
-            padding: WidgetStateProperty.all(
-                const EdgeInsets.symmetric(vertical: 0, horizontal: 8)),
-            backgroundColor: WidgetStateProperty.all(AppColors.searchBarColor),
-            textStyle: WidgetStateProperty.all(
-              const TextStyle(
-                color: AppColors.textWhite,
-                fontSize: 16,
-              ),
-            ),
-            hintText: 'Images, #tags, @users oh my!',
-            hintStyle: WidgetStateProperty.all(
-              const TextStyle(
-                color: AppColors.subtitleTextColor,
-                fontSize: 16,
-              ),
-            ),
-            shape: WidgetStateProperty.all(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-            trailing: [
-              if (isSearchActive)
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  iconSize: 30,
-                  color: Colors.white,
-                  onPressed: () {
-                    searchBarController.clear();
-                    _hideDropdown();
-                    _fetchGallery();
-                    setState(() {
-                      isSearchActive = false;
-                    });
-                  },
+      child: BlocBuilder<SearchesBloc, SearchesState>(
+        builder: (context, state) {
+          bool isSearchActive = state is SearchActiveState;
+          print('State: $state');
+          print('isSearchActive: $isSearchActive');
+
+          return AppBar(
+            backgroundColor: AppColors.backgroundColor,
+            title: CompositedTransformTarget(
+              link: LayerLink(),
+              child: SearchBar(
+                controller: searchBarController,
+                padding: WidgetStateProperty.all(
+                    const EdgeInsets.symmetric(vertical: 0, horizontal: 8)),
+                backgroundColor:
+                    WidgetStateProperty.all(AppColors.searchBarColor),
+                textStyle: WidgetStateProperty.all(
+                  const TextStyle(
+                    color: AppColors.textWhite,
+                    fontSize: 16,
+                  ),
                 ),
-              IconButton(
-                icon: const Icon(Icons.search),
-                iconSize: 30,
-                color: Colors.white,
-                onPressed: () {
-                  final query = searchBarController.text;
-                  if (query.isNotEmpty) {
-                    saveSearchQuery(query);
-                    _searchImages(query);
-                    _hideDropdown();
+                hintText: 'Images, #tags, @users oh my!',
+                hintStyle: WidgetStateProperty.all(
+                  const TextStyle(
+                    color: AppColors.subtitleTextColor,
+                    fontSize: 16,
+                  ),
+                ),
+                shape: WidgetStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                trailing: [
+                  if (isSearchActive)
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      iconSize: 30,
+                      color: Colors.white,
+                      onPressed: () {
+                        searchBarController.clear();
+                        searchesBloc.add(const ToggleSearchActive(false));
+                        searchesBloc.add(FetchGallery());
+                      },
+                    )
+                  else
+                    IconButton(
+                      icon: const Icon(Icons.search),
+                      iconSize: 30,
+                      color: Colors.white,
+                      onPressed: () {
+                        final query = searchBarController.text;
+                        if (query.isNotEmpty) {
+                          searchesBloc.add(SearchImages(query));
+                          searchesBloc.add(HideDropdown());
+                        }
+                      },
+                    ),
+                ],
+                onTap: () {
+                  if (searchBarController.text.isEmpty) {
+                    searchesBloc.add(ShowDropdown());
+                    searchesBloc.add(LoadRecentSearches());
                   }
                 },
               ),
-            ],
-            onTap: () {
-              if (searchBarController.text.isEmpty) {
-                _showDropdown();
-              }
-            },
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildSearchHistoryDropdown(List<String> recentSearches) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: Container(
+        decoration: const BoxDecoration(
+          color: AppColors.modalColor,
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(12.0),
+            bottomRight: Radius.circular(12.0),
           ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: recentSearches.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(
+                    recentSearches[index],
+                    style: const TextStyle(
+                      color: AppColors.textWhite,
+                      fontSize: 16,
+                    ),
+                  ),
+                  onTap: () {
+                    searchBarController.text = recentSearches[index];
+                    context
+                        .read<SearchesBloc>()
+                        .add(SearchImages(recentSearches[index]));
+                  },
+                );
+              },
+            ),
+            if (recentSearches.isNotEmpty)
+              TextButton(
+                onPressed: () {
+                  context.read<SearchesBloc>().add(ClearSearchHistory());
+                  context.read<SearchesBloc>().add(FetchGallery());
+                },
+                child: const Text(
+                  'Clear Search History',
+                  style: const TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildImageGallery() {
+  Widget _buildImageGallery(List<dynamic> _galleryItems) {
     double cardWidth = MediaQuery.of(context).size.width / 2;
-
     return GridView.builder(
       padding: const EdgeInsets.all(8.0),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -223,6 +244,8 @@ class _HomeScreenState extends State<HomeScreen> {
             : null;
         final title = item['title'] ?? 'Untitled';
         final points = item['points'] ?? '';
+
+        log('$item');
 
         return InkWell(
           onTap: () {
@@ -253,63 +276,63 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  OverlayEntry _createOverlayEntry(List<String> recentSearches) {
-    return OverlayEntry(
-      builder: (context) {
-        return Positioned(
-          width: MediaQuery.of(context).size.width - 20,
-          child: CompositedTransformFollower(
-            link: _layerLink,
-            showWhenUnlinked: false,
-            offset: const Offset(0.0, 65.0),
-            child: Material(
-              color: AppColors.backgroundColor,
-              elevation: 4.0,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(16),
-                  bottomRight: Radius.circular(16),
-                ),
-              ),
-              child: ListView.builder(
-                padding: EdgeInsets.zero,
-                shrinkWrap: true,
-                itemCount: recentSearches.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(recentSearches[index],
-                            style: const TextStyle(color: AppColors.textWhite)),
-                        if (index == recentSearches.length - 1)
-                          TextButton(
-                            style: ButtonStyle(
-                              padding: WidgetStateProperty.all(EdgeInsets.zero),
-                              foregroundColor:
-                                  WidgetStateProperty.all(AppColors.primary),
-                              alignment: Alignment.centerLeft,
-                            ),
-                            onPressed: () {
-                              clearRecentSearches();
-                              _hideDropdown();
-                            },
-                            child: const Text('Clear Search History'),
-                          ),
-                      ],
-                    ),
-                    onTap: () {
-                      searchBarController.text = recentSearches[index];
-                      _searchImages(recentSearches[index]);
-                      _hideDropdown();
-                    },
-                  );
-                },
+  Widget _buildEmptyGalleryContent() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(height: 20),
+          Image.asset(
+            'assets/images/error.png',
+            width: 300,
+            height: 300,
+          ),
+          const SizedBox(height: 20),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 50.0),
+            child: Text(
+              "Seems like we're struggling to find the gallery right now",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.headerTextColor,
               ),
             ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGalleryErrorContent(String error) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(height: 20),
+          Image.asset(
+            'assets/images/error.png',
+            width: 300,
+            height: 300,
           ),
-        );
-      },
+          const SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 50.0),
+            child: Text(
+              'Uh Oh! An error occurred while creating the gallery: $error',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppColors.headerTextColor,
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }
