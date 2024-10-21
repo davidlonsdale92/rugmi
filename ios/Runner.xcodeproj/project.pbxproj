@@ -500,7 +500,7 @@
 				ENABLE_BITCODE = NO;
 				FLAVOR_APP_NAME = rugmi;
 				FLUTTER_APPLICATION_PATH = /Users/davidlonsdale/Developer/rugmi;
-				FLUTTER_TARGET = /Users/davidlonsdale/Developer/rugmi/lib/entrypoints/main_development.dart;
+				FLUTTER_TARGET = /Users/davidlonsdale/Developer/rugmi/lib/main_development.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -596,7 +596,7 @@
 				ENABLE_BITCODE = NO;
 				FLAVOR_APP_NAME = rugmi;
 				FLUTTER_APPLICATION_PATH = /Users/davidlonsdale/Developer/rugmi;
-				FLUTTER_TARGET = /Users/davidlonsdale/Developer/rugmi/lib/entrypoints/main_development.dart;
+				FLUTTER_TARGET = /Users/davidlonsdale/Developer/rugmi/lib/main_development.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -687,7 +687,7 @@
 				ENABLE_BITCODE = NO;
 				FLAVOR_APP_NAME = rugmi;
 				FLUTTER_APPLICATION_PATH = /Users/davidlonsdale/Developer/rugmi;
-				FLUTTER_TARGET = /Users/davidlonsdale/Developer/rugmi/lib/entrypoints/main_development.dart;
+				FLUTTER_TARGET = /Users/davidlonsdale/Developer/rugmi/lib/main_development.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -784,7 +784,7 @@
 				ENABLE_BITCODE = NO;
 				FLAVOR_APP_NAME = "[DEV] rugmi";
 				FLUTTER_APPLICATION_PATH = /Users/davidlonsdale/Developer/rugmi;
-				FLUTTER_TARGET = /Users/davidlonsdale/Developer/rugmi/lib/entrypoints/main_development.dart;
+				FLUTTER_TARGET = /Users/davidlonsdale/Developer/rugmi/lib/main_development.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -878,7 +878,7 @@
 				ENABLE_BITCODE = NO;
 				FLAVOR_APP_NAME = "[DEV] rugmi";
 				FLUTTER_APPLICATION_PATH = /Users/davidlonsdale/Developer/rugmi;
-				FLUTTER_TARGET = /Users/davidlonsdale/Developer/rugmi/lib/entrypoints/main_development.dart;
+				FLUTTER_TARGET = /Users/davidlonsdale/Developer/rugmi/lib/main_development.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -971,7 +971,7 @@
 				ENABLE_BITCODE = NO;
 				FLAVOR_APP_NAME = "[DEV] rugmi";
 				FLUTTER_APPLICATION_PATH = /Users/davidlonsdale/Developer/rugmi;
-				FLUTTER_TARGET = /Users/davidlonsdale/Developer/rugmi/lib/entrypoints/main_development.dart;
+				FLUTTER_TARGET = /Users/davidlonsdale/Developer/rugmi/lib/main_development.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1067,7 +1067,7 @@
 				ENABLE_BITCODE = NO;
 				FLAVOR_APP_NAME = "[STG] rugmi";
 				FLUTTER_APPLICATION_PATH = /Users/davidlonsdale/Developer/rugmi;
-				FLUTTER_TARGET = /Users/davidlonsdale/Developer/rugmi/lib/entrypoints/main_development.dart;
+				FLUTTER_TARGET = /Users/davidlonsdale/Developer/rugmi/lib/main_development.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1163,7 +1163,7 @@
 				ENABLE_BITCODE = NO;
 				FLAVOR_APP_NAME = "[STG] rugmi";
 				FLUTTER_APPLICATION_PATH = /Users/davidlonsdale/Developer/rugmi;
-				FLUTTER_TARGET = /Users/davidlonsdale/Developer/rugmi/lib/entrypoints/main_development.dart;
+				FLUTTER_TARGET = /Users/davidlonsdale/Developer/rugmi/lib/main_development.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1254,7 +1254,7 @@
 				ENABLE_BITCODE = NO;
 				FLAVOR_APP_NAME = "[STG] rugmi";
 				FLUTTER_APPLICATION_PATH = /Users/davidlonsdale/Developer/rugmi;
-				FLUTTER_TARGET = /Users/davidlonsdale/Developer/rugmi/lib/entrypoints/main_development.dart;
+				FLUTTER_TARGET = /Users/davidlonsdale/Developer/rugmi/lib/main_development.dart;
 				INFOPLIST_FILE = Runner/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
